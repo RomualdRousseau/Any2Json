@@ -18,6 +18,10 @@ jobs:
                 with:
                     path: ~/.m2/repository
                     key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+
+            -   name: Installing local dependencies
+                run: mvn install:install-file -Dfile="./libs/nl.fountain/xelem/3.1/xelem-3.1.jar" -DgroupId="nl.fountain" -DartifactId="xelem" -Dversion="3.1" -Dpackaging="jar"
+
             -   name: Build project
                 run: mvn -B compile --file pom.xml
 
@@ -34,6 +38,7 @@ jobs:
                 with:
                     path: ~/.m2/repository
                     key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+
             -   name: Test project
                 run: mvn -B test --file pom.xml
 
@@ -52,6 +57,7 @@ jobs:
                 with:
                     path: ~/.m2/repository
                     key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+
             -   name: Deploy project
                 run: mvn -B deploy -P release -Dmaven.test.skip=true --file pom.xml -s settings.xml
                 env:
