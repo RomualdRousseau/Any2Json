@@ -3,7 +3,7 @@
 	<groupId>com.github.romualdrousseau</groupId>
 	<artifactId>any2json</artifactId>
 	<packaging>jar</packaging>
-	<version>1.2-SNAPSHOT</version>
+	<version>1.2</version>
 	<name>Any2Json</name>
 	<description>Convert any text file in Json</description>
 	<url>https://github.com/romualdrousseau/any2json</url>
@@ -97,7 +97,7 @@
 		<dependency>
 			<groupId>com.github.romualdrousseau</groupId>
 			<artifactId>shuju</artifactId>
-			<version>1.6-SNAPSHOT</version>
+			<version>1.6</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
