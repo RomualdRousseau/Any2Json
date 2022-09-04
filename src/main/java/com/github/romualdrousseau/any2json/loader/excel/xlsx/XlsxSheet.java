@@ -19,7 +19,7 @@ import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.model.SharedStringsTable;
+import org.apache.poi.xssf.model.SharedStrings;
 import org.apache.poi.xssf.model.StylesTable;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
@@ -31,7 +31,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class XlsxSheet extends IntelliSheet {
 
-    public XlsxSheet(final String name, final InputStream sheetData, final SharedStringsTable sharedStrings,
+    public XlsxSheet(final String name, final InputStream sheetData, final SharedStrings sharedStrings,
             final StylesTable styles) {
         this.name = name;
         this.sheetData = sheetData;
@@ -353,7 +353,7 @@ public class XlsxSheet extends IntelliSheet {
     private final String name;
     private final InputStream sheetData;
     private final StylesTable styles;
-    private final SharedStringsTable sharedStrings;
+    private final SharedStrings sharedStrings;
     private final ArrayList<CellRangeAddress> mergedRegions = new ArrayList<CellRangeAddress>();
     private final ArrayList<XlsxRow> rows = new ArrayList<XlsxRow>();
     private boolean dataLoaded;

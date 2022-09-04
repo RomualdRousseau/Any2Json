@@ -18,7 +18,7 @@ import org.apache.poi.poifs.crypt.EncryptionInfo;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
 import org.apache.poi.xssf.eventusermodel.XSSFReader.SheetIterator;
-import org.apache.poi.xssf.model.SharedStringsTable;
+import org.apache.poi.xssf.model.SharedStrings;
 import org.apache.poi.xssf.model.StylesTable;
 
 public class XlsxDocument implements Document {
@@ -43,7 +43,7 @@ public class XlsxDocument implements Document {
             }
 
             final XSSFReader reader = new XSSFReader(this.opcPackage);
-            final SharedStringsTable sharedStrings = reader.getSharedStringsTable();
+            final SharedStrings sharedStrings = reader.getSharedStringsTable();
             final StylesTable styles = reader.getStylesTable();
 
             final SheetIterator it = (SheetIterator) reader.getSheetsData();

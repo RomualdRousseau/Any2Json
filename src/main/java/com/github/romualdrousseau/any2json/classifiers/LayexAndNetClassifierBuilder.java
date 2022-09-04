@@ -45,10 +45,24 @@ public class LayexAndNetClassifierBuilder implements IClassifierBuilder {
 		return this;
 	}
 
+    public LayexAndNetClassifierBuilder setMetaLayexes(String[] metaLayexes) {
+        this.metaLayexes = metaLayexes;
+		return this;
+    }
+
+    public LayexAndNetClassifierBuilder setDataLayexes(String[] dataLayexes) {
+        this.dataLayexes = dataLayexes;
+		return this;
+	}
+
     public ClassifierFactory build() {
         final LayexAndNetClassifier classifier;
         if (model == null) {
-            classifier = new LayexAndNetClassifier(ngramList, entityList, stopWordList, tagList, requiredTagList, pivotEntityList);
+            if (metaLayexes != null && dataLayexes != null) {
+                classifier = new LayexAndNetClassifier(ngramList, entityList, stopWordList, tagList, requiredTagList, pivotEntityList, metaLayexes, dataLayexes);
+            } else {
+                classifier = new LayexAndNetClassifier(ngramList, entityList, stopWordList, tagList, requiredTagList, pivotEntityList);
+            }
         } else {
             classifier = new LayexAndNetClassifier(model);
         }
@@ -64,4 +78,6 @@ public class LayexAndNetClassifierBuilder implements IClassifierBuilder {
     private StringList tagList;
     private String[] requiredTagList;
     private String[] pivotEntityList;
+    private String[] metaLayexes;
+    private String[] dataLayexes;
 }

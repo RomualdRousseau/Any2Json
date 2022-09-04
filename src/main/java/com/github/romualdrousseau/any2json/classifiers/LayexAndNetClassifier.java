@@ -58,7 +58,6 @@ public class LayexAndNetClassifier implements ILayoutClassifier, ITagClassifier 
             "(()(ES.+$))(()(.{3,}$))+(.{2}$)?"
         };
 
-
     public LayexAndNetClassifier(final NgramList ngrams, final RegexList entities, final StopWordList stopwords, final StringList tags, final String[] requiredTags, final String[] pivotEntityList) {
         this(ngrams, entities, stopwords, tags, requiredTags, pivotEntityList, metaLayexesDefault, dataLayexesDefault);
     }

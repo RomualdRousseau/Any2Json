@@ -9,7 +9,7 @@ import com.github.romualdrousseau.any2json.base.*;
 import com.github.romualdrousseau.any2json.intelli.*;
 import com.github.romualdrousseau.any2json.event.*;
 import com.github.romualdrousseau.any2json.intelli.header.*;
-import com.github.romualdrousseau.any2json.layex.*;
+import com.github.romualdrousseau.any2json.classifiers.layex.*;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,7 +31,7 @@ final String[] dataLayexes = {
   "((VV.+$)?(ES.+$))(()(.{3,}$))+(.{2}$)?"
 };
 
-ITagClassifier classifier;
+ClassifierFactory classifier;
 int scrollSpeed;
 int gridSize;
 
@@ -40,17 +40,16 @@ PGraphics documentImage;
 int documentTopY;
 
 void configure() {
-  com.github.romualdrousseau.shuju.json.JSONObject ngrams = JSON.loadJSONObject(dataPath("ngrams.json"));
-  com.github.romualdrousseau.shuju.json.JSONObject entities = JSON.loadJSONObject(dataPath("entities.json"));
-  com.github.romualdrousseau.shuju.json.JSONArray stopwords = JSON.loadJSONArray(dataPath("stopwords.json"));
-  com.github.romualdrousseau.shuju.json.JSONObject tags = JSON.loadJSONObject(dataPath("tags.json"));
-  classifier = new NGramNNClassifier(new NgramList(ngrams),
-                new RegexList(entities),
-                new StopWordList(stopwords),
-                new com.github.romualdrousseau.shuju.nlp.StringList(tags),
-                null,
-                metaLayexes,
-                dataLayexes);
+  classifier = new LayexAndNetClassifierBuilder()
+    .setNgramList(new NgramList(JSON.loadJSONObject(dataPath("ngrams.json"))))
+    .setEntityList(new RegexList(JSON.loadJSONObject(dataPath("entities.json"))))
+    .setStopWordList(new StopWordList(JSON.loadJSONArray(dataPath("stopwords.json"))))
+    .setTagList(new com.github.romualdrousseau.shuju.nlp.StringList(JSON.loadJSONObject(dataPath("tags.json"))))
+    .setRequiredTagList(new String[] {"quantity", "productName"})
+    .setPivotEntityList(new String[] {"date"})
+    .setMetaLayexes(metaLayexes)
+    .setDataLayexes(dataLayexes)
+    .build();
 
   scrollSpeed = 100; // 100px per scroll
 
@@ -147,7 +146,7 @@ void loadDocument(String filePath) {
 }
 
 void buildEmptyImage() {
-  int dx = width / classifier.getSampleCount();
+  int dx = width / classifier.getLayoutClassifier().get().getSampleCount();
   int dy = gridSize;
 
   documentImage = createGraphics(width, height);
@@ -166,7 +165,7 @@ void buildEmptyImage() {
 
 void buildImage(SheetEvent e) {
   AbstractSheet sheet = (AbstractSheet) e.getSource();
-  int dx = width / classifier.getSampleCount();
+  int dx = width / classifier.getLayoutClassifier().get().getSampleCount();
   int maxRows = Math.min(sheet.getLastRowNum() + 1, 5000);
 
   if (e instanceof BitmapGeneratedEvent) {
@@ -179,7 +178,7 @@ void buildImage(SheetEvent e) {
     SheetBitmap bitmap = ((BitmapGeneratedEvent) e).getBitmap();
     if (bitmap == null) {
       for (int y = 0; y <= sheet.getLastRowNum(); y++) {
-        for (int x = 0; x < classifier.getSampleCount(); x++) {
+        for (int x = 0; x < classifier.getLayoutClassifier().get().getSampleCount(); x++) {
           documentImage.fill(color(255 * ((x <= sheet.getLastColumnNum(y)) ? 1 : 0)));
           documentImage.rect(x * dx, y * gridSize, dx, gridSize);
         }
@@ -296,7 +295,7 @@ void displayHUD() {
   text("F3: Open a document", 4, height - 4);
 
   fill(255, 0, 0);
-  int x = floor(mouseX * classifier.getSampleCount() / width);
+  int x = floor(mouseX * classifier.getLayoutClassifier().get().getSampleCount() / width);
   int y = floor((mouseY + documentTopY) / gridSize);
   String s = String.format("(%d, %d)", x, y);
   text(s, width - textWidth(s) - 4, height - 4);
