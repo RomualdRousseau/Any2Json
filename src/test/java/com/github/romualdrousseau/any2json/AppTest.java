@@ -1,15 +1,14 @@
 package com.github.romualdrousseau.any2json;
 
 import java.nio.file.Paths;
-import java.util.Iterator;
-
-import com.github.romualdrousseau.any2json.classifier.SimpleClassifierBuilder;
-
 import java.nio.file.Path;
 import java.net.URL;
 import java.net.URISyntaxException;
 
 import org.junit.Test;
+
+import com.github.romualdrousseau.shuju.json.JSONObject;
+
 import static org.junit.Assert.*;
 
 /**
@@ -22,64 +21,17 @@ public class AppTest {
      */
     @Test
     public void testReadVariousDocuments() {
-        Document document = null;
-        Sheet sheet = null;
-        Table table = null;
-        Header header = null;
-        Row firstRow = null;
-        int fileNo = 0;
-
-        ClassifierFactory classifierFactor = new SimpleClassifierBuilder()
-            .build();
-
-        for (String[] expectedValues : scenarios) {
-            int state = 0;
-            Iterator<Header> itHeader = null;
-            for (String expectedValue : expectedValues) {
-                switch (state) {
-                    case 0:
-                        document = loadDocument(expectedValue, "UTF-8");
-                        sheet = document.getSheetAt(0);
-                        sheet.setClassifierFactory(classifierFactor);
-                        table = sheet.getTable();
-                        assert table != null;
-                        itHeader = table.headers().iterator();
-                        header = itHeader.next();
-                        firstRow = table.rows().iterator().next();
-                        state = 1;
-                        break;
-                    case 1:
-                        assertEquals(fileNo + ": Sheet name", expectedValue, sheet.getName());
-                        state = 2;
-                        break;
-                    case 2:
-                        assertEquals(fileNo + ": Number of Rows", expectedValue, "" + table.getNumberOfRows());
-                        state = 3;
-                        break;
-                    case 3:
-                        assertEquals(fileNo + ": Header name", expectedValue, header.getName());
-                        state = 4;
-                        break;
-                    case 4:
-                        assertEquals(fileNo + ": Value of <" + header.getName() + ">", expectedValue,
-                        header.getCellAtRow(firstRow).getValue());
-                        header = itHeader.next();
-                        state = 3;
-                        break;
-                }
-            }
-            document.close();
-            fileNo++;
-        }
+        JSONObject model = ModelDB.createConnection("sales-english");
+        System.out.println(model.getArray("vocabulary"));
     }
 
     private Document loadDocument(String resourceName, String encoding) {
-        return DocumentFactory.createInstance(getResourcePath(resourceName).toFile(), encoding);
+        return DocumentFactory.createInstance(this.getResourcePath(resourceName).toFile(), encoding);
     }
 
     private Path getResourcePath(String resourceName) {
         try {
-            URL resourceUrl = getClass().getResource(resourceName);
+            URL resourceUrl = this.getClass().getResource(resourceName);
             assert resourceUrl != null;
             return Paths.get(resourceUrl.toURI());
         } catch (URISyntaxException x) {
@@ -87,8 +39,4 @@ public class AppTest {
             return null;
         }
     }
-
-    private String[][] scenarios = {
-        //{ "/data/Singapore - ZUELLIG - Sales - 202101", "Aggregated", "6", ""}
-    };
 }
