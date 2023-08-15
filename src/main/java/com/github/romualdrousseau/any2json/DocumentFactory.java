@@ -28,9 +28,6 @@ public class DocumentFactory {
 
     public static Document createInstance(final String filePath, final String encoding, final String password,
             final boolean wellFormed) {
-        if (filePath == null) {
-            throw new IllegalArgumentException();
-        }
         return DocumentFactory.createInstance(new File(filePath), encoding, password, wellFormed);
     }
 
@@ -47,7 +44,6 @@ public class DocumentFactory {
         if (file == null) {
             throw new IllegalArgumentException();
         }
-
         return DocumentFactory.factories.stream()
                 .sorted((a, b) -> a.getPriority().ordinal() - b.getPriority().ordinal())
                 .map(IDocumentClass::newInstance)
@@ -63,7 +59,8 @@ public class DocumentFactory {
                 .map(clazz -> {
                     try {
                         return (IDocumentClass) clazz.getConstructor().newInstance();
-                    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException  e) {
+                    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                            | InvocationTargetException | NoSuchMethodException | SecurityException e) {
                         return null;
                     }
                 })
