@@ -19,12 +19,7 @@ public class DocumentFactory {
     }
 
     public static Document createInstance(final String filePath, final String encoding, final String password) {
-        return DocumentFactory.createInstance(new File(filePath), encoding, password, true);
-    }
-
-    public static Document createInstance(final String filePath, final String encoding, final String password,
-            final boolean wellFormed) {
-        return DocumentFactory.createInstance(new File(filePath), encoding, password, wellFormed);
+        return DocumentFactory.createInstance(new File(filePath), encoding, password);
     }
 
     public static Document createInstance(final File file, final String encoding) {
@@ -35,27 +30,10 @@ public class DocumentFactory {
         if (file == null) {
             throw new IllegalArgumentException();
         }
-        return DocumentFactory.factories.stream()
-                .sorted((a, b) -> a.getPriority().ordinal() - b.getPriority().ordinal())
-                .map(IDocumentClass::newInstance)
-                .filter(x -> x.open(file, encoding, password, wellFormed))
+        return DynamicPackages.GetDocumentFactories().stream()
+                .map(DocumentClass::newInstance)
+                .filter(x -> x.open(file, encoding, password))
                 .findFirst()
                 .orElseThrow(() -> new UnknownFormatConversionException(file.toString()));
-    }
-
-    private static List<IDocumentClass> factories;
-    static {
-        final Reflections reflections = new Reflections(PACKAGE_LOADER_PREFIX, new SubTypesScanner(false));
-        DocumentFactory.factories = reflections.getSubTypesOf(IDocumentClass.class).stream()
-                .map(clazz -> {
-                    try {
-                        return (IDocumentClass) clazz.getConstructor().newInstance();
-                    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                            | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-                        return null;
-                    }
-                })
-                .filter(x -> x != null)
-                .toList();
     }
 }
