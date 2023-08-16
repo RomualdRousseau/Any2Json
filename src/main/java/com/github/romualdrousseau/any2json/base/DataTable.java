@@ -56,7 +56,20 @@ public class DataTable extends BaseTable {
 
     @Override
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+    public int getNumberOfHeaderTags() {
+        return this.headersByTag.size();
+    }
+
+    @Override
+    public Iterable<Header> headerTags() {
+        return this.headersByTag.values();
+    }
+
+    @Override
+>>>>>>> 4e67360 (Cleanup)
     public void updateHeaderTags() {
         for (final Header header : this.headers()) {
             ((DataTableHeader) header).resetTag();
@@ -76,6 +89,7 @@ public class DataTable extends BaseTable {
         }
     }
 
+<<<<<<< HEAD
     @Override
 >>>>>>> d589a91 (Cleanup headers)
     public int getNumberOfHeaderTags() {
@@ -120,6 +134,8 @@ public class DataTable extends BaseTable {
     }
 
 <<<<<<< HEAD
+=======
+>>>>>>> 4e67360 (Cleanup)
     public void prepareHeaders() {
         this.setLoadCompleted(true); // Give chance to pivot header value to update their name
         if (this.getSheet().getDocument().getHints().contains(Document.Hint.INTELLI_TAG)) {
