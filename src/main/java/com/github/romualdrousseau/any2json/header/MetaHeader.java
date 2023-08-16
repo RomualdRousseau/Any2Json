@@ -2,11 +2,13 @@ package com.github.romualdrousseau.any2json.header;
 
 import java.util.List;
 
+import com.github.romualdrousseau.any2json.HeaderTag;
 import com.github.romualdrousseau.any2json.Row;
 import com.github.romualdrousseau.any2json.base.BaseCell;
+import com.github.romualdrousseau.any2json.base.BaseHeader;
 import com.github.romualdrousseau.any2json.base.BaseTable;
 
-public class MetaHeader extends CompositeHeader {
+public class MetaHeader extends BaseHeader {
 
     public MetaHeader(final BaseTable table, final BaseCell cell) {
         super(table, cell);
@@ -40,12 +42,22 @@ public class MetaHeader extends CompositeHeader {
     }
 
     @Override
-    public CompositeHeader clone() {
+    public BaseHeader clone() {
         return new MetaHeader(this);
     }
 
     @Override
     public List<String> entities() {
+        return null;
+    }
+
+    @Override
+    public boolean hasTag() {
+        return false;
+    }
+
+    @Override
+    public HeaderTag getTag() {
         return null;
     }
 

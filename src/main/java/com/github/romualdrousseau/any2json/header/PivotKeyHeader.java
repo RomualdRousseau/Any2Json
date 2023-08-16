@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.github.romualdrousseau.any2json.DocumentFactory;
 import com.github.romualdrousseau.any2json.base.BaseCell;
+import com.github.romualdrousseau.any2json.base.BaseHeader;
 import com.github.romualdrousseau.any2json.base.BaseTable;
 
 public class PivotKeyHeader extends MetaHeader {
@@ -28,7 +29,7 @@ public class PivotKeyHeader extends MetaHeader {
     }
 
     @Override
-    public CompositeHeader clone() {
+    public BaseHeader clone() {
         return new PivotKeyHeader(this);
     }
 

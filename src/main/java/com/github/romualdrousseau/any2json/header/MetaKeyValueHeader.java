@@ -2,6 +2,7 @@ package com.github.romualdrousseau.any2json.header;
 
 import com.github.romualdrousseau.any2json.Row;
 import com.github.romualdrousseau.any2json.base.BaseCell;
+import com.github.romualdrousseau.any2json.base.BaseHeader;
 import com.github.romualdrousseau.any2json.base.BaseTable;
 
 public class MetaKeyValueHeader extends MetaHeader {
@@ -38,7 +39,7 @@ public class MetaKeyValueHeader extends MetaHeader {
     }
 
     @Override
-    public CompositeHeader clone() {
+    public BaseHeader clone() {
         return new MetaKeyValueHeader(this);
     }
 

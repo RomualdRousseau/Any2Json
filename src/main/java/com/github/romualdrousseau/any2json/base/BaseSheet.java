@@ -21,7 +21,8 @@ import com.github.romualdrousseau.shuju.util.CollectionUtils;
 
 public class BaseSheet implements Sheet {
 
-    public BaseSheet(final String name, final SheetStore store) {
+    public BaseSheet(final BaseDocument document, final String name, final SheetStore store) {
+        this.document = document;
         this.name = name;
         this.sheetStore = store;
         this.storeLastColumnNum = this.computeLastColumnNum();
@@ -97,7 +98,7 @@ public class BaseSheet implements Sheet {
     }
 
     public BaseDocument getDocument() {
-        return null;
+        return this.document;
     }
 
     public SheetStore getSheetStore() {
@@ -248,6 +249,7 @@ public class BaseSheet implements Sheet {
         return result;
     }
 
+    private final BaseDocument document;
     private final String name;
     private final SheetStore sheetStore;
     private final ArrayList<SheetListener> listeners = new ArrayList<SheetListener>();
