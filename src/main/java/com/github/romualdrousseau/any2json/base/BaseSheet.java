@@ -2,33 +2,36 @@ package com.github.romualdrousseau.any2json.base;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import com.github.romualdrousseau.any2json.ClassifierFactory;
 import com.github.romualdrousseau.any2json.DocumentFactory;
 import com.github.romualdrousseau.any2json.Sheet;
 import com.github.romualdrousseau.any2json.SheetEvent;
 import com.github.romualdrousseau.any2json.SheetListener;
 import com.github.romualdrousseau.any2json.Table;
-import com.github.romualdrousseau.any2json.classifier.SimpleClassifierBuilder;
+import com.github.romualdrousseau.any2json.event.AllTablesExtractedEvent;
+import com.github.romualdrousseau.any2json.event.DataTableListBuiltEvent;
+import com.github.romualdrousseau.any2json.event.MetaTableListBuiltEvent;
+import com.github.romualdrousseau.any2json.event.SheetPreparedEvent;
+import com.github.romualdrousseau.any2json.event.TableGraphBuiltEvent;
 import com.github.romualdrousseau.any2json.event.TableReadyEvent;
-import com.github.romualdrousseau.any2json.simple.SimpleTable;
+import com.github.romualdrousseau.any2json.intelli.IntelliTable;
+import com.github.romualdrousseau.any2json.transform.TransformableSheet;
 import com.github.romualdrousseau.shuju.util.CollectionUtils;
 
-public abstract class BaseSheet implements Sheet {
+public class BaseSheet implements Sheet {
 
-    public abstract Table parseAllTables();
-
-    public BaseSheet(final SheetStore store) {
+    public BaseSheet(final String name, final SheetStore store) {
+        this.name = name;
         this.sheetStore = store;
         this.storeLastColumnNum = this.computeLastColumnNum();
         this.columnMask = CollectionUtils.mutableRange(0, this.storeLastColumnNum + 1);
         this.rowMask = CollectionUtils.mutableRange(0, this.sheetStore.getLastRowNum() + 1);
-        this.classifierFactory = new SimpleClassifierBuilder().build();
     }
 
     @Override
     public String getName() {
-        return this.sheetStore.getName();
+        return this.name;
     }
 
     @Override
@@ -42,41 +45,63 @@ public abstract class BaseSheet implements Sheet {
     }
 
     @Override
-    public Table getTable() {
-        if (this.sheetStore.getLastRowNum() <= 0 || this.getLastColumnNum() <= 0) {
-            return null;
-        }
-        final Table table;
-        if (this.classifierFactory.getLayoutClassifier().isPresent()) {
-            table = this.parseAllTables();
-        } else {
-            table = this.parseOneTable();
-        }
-        this.notifyStepCompleted(new TableReadyEvent(this, table));
-        return table;
-    }
-
-    @Override
-    public void setClassifierFactory(final ClassifierFactory classifierFactory) {
-        if (classifierFactory == null) {
-            this.classifierFactory = new SimpleClassifierBuilder().build();
-        }
-        else {
-            this.classifierFactory = classifierFactory;
-        }
-    }
-
-    @Override
     public void addSheetListener(final SheetListener listener) {
         this.listeners.add(listener);
     }
 
-    public SheetStore getSheetStore() {
-        return this.sheetStore;
+    @Override
+    public Optional<Table> getTable() {
+        if (this.getLastRowNum() <= 0 || this.getLastColumnNum() <= 0) {
+            return Optional.empty();
+        }
+
+        TransformableSheet.of(this).transformSheet();
+        if (!this.notifyStepCompleted(new SheetPreparedEvent(this))) {
+            return Optional.empty();
+        }
+
+        final List<BaseTable> tables = this.getDocument().getSheetParser().findAllElements(this);
+        if (!this.notifyStepCompleted(new AllTablesExtractedEvent(this, tables))) {
+            return Optional.empty();
+        }
+
+        final List<DataTable> dataTables = this.getDocument().getElementParser().getDataTables(this, tables);
+        if (!this.notifyStepCompleted(new DataTableListBuiltEvent(this, dataTables))) {
+            return Optional.empty();
+        }
+        if (dataTables.size() == 0) {
+            return Optional.empty();
+        }
+
+        final List<MetaTable> metaTables = this.getDocument().getElementParser().getMetaTables(this, tables);
+        if (!this.notifyStepCompleted(new MetaTableListBuiltEvent(this, metaTables))) {
+            return Optional.empty();
+        }
+
+        final DataTable table;
+        if (dataTables.size() == 1 && metaTables.size() == 0) {
+            table = dataTables.get(0);
+        } else {
+            final BaseTableGraph root = BaseTableGraphBuilder.Build(metaTables, dataTables);
+            if (!this.notifyStepCompleted(new TableGraphBuiltEvent(this, root))) {
+                return Optional.empty();
+            }
+            table = new IntelliTable(this, root);
+        }
+        table.prepareHeaders();
+        table.updateHeaderTags();
+        table.setLoadCompleted(true);
+        this.notifyStepCompleted(new TableReadyEvent(this, table));
+
+        return Optional.ofNullable(table);
     }
 
-    public ClassifierFactory getClassifierFactory() {
-        return this.classifierFactory;
+    public BaseDocument getDocument() {
+        return null;
+    }
+
+    public SheetStore getSheetStore() {
+        return this.sheetStore;
     }
 
     public int getLastColumnNum(final int rowIndex) {
@@ -178,23 +203,23 @@ public abstract class BaseSheet implements Sheet {
         this.bitmapThreshold = bitmapThreshold;
     }
 
-    protected void markColumnAsNull(final int colIndex) {
+    public void markColumnAsNull(final int colIndex) {
         if (colIndex < this.columnMask.size()) {
             this.columnMask.set(colIndex, null);
         }
     }
 
-    protected void removeAllNullColumns() {
+    public void removeAllNullColumns() {
         this.columnMask.removeIf(i -> i == null);
     }
 
-    protected void markRowAsNull(final int rowIndex) {
+    public void markRowAsNull(final int rowIndex) {
         if (rowIndex < this.rowMask.size()) {
             this.rowMask.set(rowIndex, null);
         }
     }
 
-    protected void removeAllNullRows() {
+    public void removeAllNullRows() {
         this.rowMask.removeIf(i -> i == null);
     }
 
@@ -223,16 +248,12 @@ public abstract class BaseSheet implements Sheet {
         return result;
     }
 
-    private Table parseOneTable() {
-        return new SimpleTable(this, 0, 0, this.getLastColumnNum(), this.getLastRowNum());
-    }
-
-    private final ArrayList<SheetListener> listeners = new ArrayList<SheetListener>();
+    private final String name;
     private final SheetStore sheetStore;
+    private final ArrayList<SheetListener> listeners = new ArrayList<SheetListener>();
     private final List<Integer> rowMask;
     private final List<Integer> columnMask;
     private final int storeLastColumnNum;
-    private ClassifierFactory classifierFactory;
     private boolean unmergedAll = false;
     private float bitmapThreshold = 0.5f;
 }

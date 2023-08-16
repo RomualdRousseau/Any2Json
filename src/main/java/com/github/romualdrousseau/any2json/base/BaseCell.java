@@ -6,8 +6,6 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 import com.github.romualdrousseau.any2json.Cell;
-import com.github.romualdrousseau.any2json.ClassifierFactory;
-import com.github.romualdrousseau.any2json.layex.Symbol;
 import com.github.romualdrousseau.shuju.types.Tensor;
 import com.github.romualdrousseau.shuju.util.StringUtils;
 
@@ -21,30 +19,20 @@ public class BaseCell implements Cell, Symbol {
 
     public BaseCell(final String value, BaseCell cell) {
         this(value, cell.getColumnIndex(),
-                cell.getMergedCount(), cell.getRawValue(), cell.getClassifierFactory());
+                cell.getMergedCount(), cell.getRawValue(), cell.getSheet());
     }
 
     public BaseCell(final String value, final int colIndex, final int mergedCount,
-            final ClassifierFactory classifierFactory) {
-        this(value, colIndex, mergedCount, value, classifierFactory);
+            final BaseSheet sheet) {
+        this(value, colIndex, mergedCount, value, sheet);
     }
 
-    public BaseCell(final String value, final int colIndex, final int mergedCount, final String rawValue, final ClassifierFactory classifierFactory) {
-        this.value = value;
+    public BaseCell(final String value, final int colIndex, final int mergedCount, final String rawValue, final BaseSheet sheet) {
         this.colIndex = colIndex;
         this.mergedCount = mergedCount;
         this.rawValue = rawValue;
-        this.classifierFactory = classifierFactory;
-
-        if(this.classifierFactory != null) {
-            final List<String> entityList = this.classifierFactory.getLayoutClassifier().map(c -> c.getEntityList()).orElse(Collections.emptyList());
-            this.entityVector = this.classifierFactory.getLayoutClassifier().map(c -> c.toEntityVector(this.value)).orElse(Tensor.Null);
-            this.entityList = IntStream.range(0, this.entityVector.size).boxed().filter(i -> this.entityVector.data[i] > 0.0f).map(i -> entityList.get(i)).toList();
-        }
-        else {
-            this.entityVector = Tensor.Null;
-            this.entityList = Collections.emptyList();
-        }
+        this.sheet = sheet;
+        this.setValue(value);
     }
 
     @Override
@@ -87,8 +75,8 @@ public class BaseCell implements Cell, Symbol {
         return this.entityList.stream().anyMatch(x -> x.equalsIgnoreCase(literal));
     }
 
-    public ClassifierFactory getClassifierFactory() {
-        return this.classifierFactory;
+    public BaseSheet getSheet() {
+        return this.sheet;
     }
 
     public String getRawValue() {
@@ -112,24 +100,26 @@ public class BaseCell implements Cell, Symbol {
     }
 
     public Optional<String> getPivotEntityAsString() {
-        return this.classifierFactory.getLayoutClassifier()
-                .flatMap(c -> this.entityList.stream().filter(x -> c.getPivotEntityList().contains(x)).findFirst());
+        if (this.sheet != null) {
+            return this.entityList.stream().filter(x -> this.sheet.getDocument().getModel().getPivotEntityList().contains(x)).findFirst();
+        } else {
+            return Optional.empty();
+        }
     }
 
     public void setValue(final String value) {
         this.value = value;
-        if(this.classifierFactory != null) {
-            final List<String> entityList = this.classifierFactory.getLayoutClassifier().map(c -> c.getEntityList()).orElse(Collections.emptyList());
-            this.entityVector = this.classifierFactory.getLayoutClassifier().map(c -> c.toEntityVector(this.value)).orElse(Tensor.Null);
+        if (this.sheet != null) {
+            final List<String> entityList = this.sheet.getDocument().getModel().getEntityList();
+            this.entityVector = this.sheet.getDocument().getModel().toEntityVector(this.value);
             this.entityList = IntStream.range(0, this.entityVector.size).boxed().filter(i -> this.entityVector.data[i] > 0.0f).map(i -> entityList.get(i)).toList();
-        }
-        else {
+        } else {
             this.entityVector = Tensor.Null;
             this.entityList = Collections.emptyList();
         }
     }
 
-    private final ClassifierFactory classifierFactory;
+    private final BaseSheet sheet;
     private final int colIndex;
     private final int mergedCount;
     private final String rawValue;

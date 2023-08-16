@@ -8,15 +8,17 @@ import com.github.romualdrousseau.any2json.Row;
 import com.github.romualdrousseau.any2json.base.BaseCell;
 import com.github.romualdrousseau.any2json.base.BaseHeader;
 import com.github.romualdrousseau.any2json.base.BaseSheet;
+import com.github.romualdrousseau.any2json.base.BaseTableGraph;
+import com.github.romualdrousseau.any2json.base.DataTable;
 import com.github.romualdrousseau.any2json.base.BaseRow;
 import com.github.romualdrousseau.any2json.base.RowGroup;
-import com.github.romualdrousseau.any2json.intelli.header.CompositeHeader;
-import com.github.romualdrousseau.any2json.intelli.header.PivotKeyHeader;
+import com.github.romualdrousseau.any2json.header.CompositeHeader;
+import com.github.romualdrousseau.any2json.header.PivotKeyHeader;
 import com.github.romualdrousseau.shuju.util.StringUtils;
 
-public class IntelliTable extends CompositeTable {
+public class IntelliTable extends DataTable {
 
-    public IntelliTable(final BaseSheet sheet, final CompositeTableGraph root) {
+    public IntelliTable(final BaseSheet sheet, final BaseTableGraph root) {
         super(sheet);
         this.buildHeaders(root);
         this.buildTable(root, this.findPivotHeader());
@@ -49,8 +51,8 @@ public class IntelliTable extends CompositeTable {
         super.prepareHeaders();
     }
 
-    private void buildHeaders(final CompositeTableGraph graph) {
-        for (final CompositeTableGraph child : graph.children()) {
+    private void buildHeaders(final BaseTableGraph graph) {
+        for (final BaseTableGraph child : graph.children()) {
             for (final Header header : child.getTable().headers()) {
                 final CompositeHeader compositeHeader = (CompositeHeader) header;
                 if (this.checkIfHeaderExists(compositeHeader)) {
@@ -71,7 +73,7 @@ public class IntelliTable extends CompositeTable {
             }
         }
 
-        for (final CompositeTableGraph child : graph.children()) {
+        for (final BaseTableGraph child : graph.children()) {
             this.buildHeaders(child);
         }
     }
@@ -87,19 +89,19 @@ public class IntelliTable extends CompositeTable {
         return result;
     }
 
-    private void buildTable(final CompositeTableGraph graph, final PivotKeyHeader pivot) {
-        for (final CompositeTableGraph child : graph.children()) {
+    private void buildTable(final BaseTableGraph graph, final PivotKeyHeader pivot) {
+        for (final BaseTableGraph child : graph.children()) {
             if (child.getTable() instanceof DataTable) {
                 this.buildRowsForOneTable(child, (DataTable) child.getTable(), pivot);
             }
         }
 
-        for (final CompositeTableGraph child : graph.children()) {
+        for (final BaseTableGraph child : graph.children()) {
             buildTable(child, pivot);
         }
     }
 
-    private void buildRowsForOneTable(final CompositeTableGraph graph, final DataTable orgTable, final PivotKeyHeader pivot) {
+    private void buildRowsForOneTable(final BaseTableGraph graph, final DataTable orgTable, final PivotKeyHeader pivot) {
         if (orgTable.getNumberOfRowGroups() == 0) {
             for (final Row orgRow : orgTable.rows()) {
                 final ArrayList<IntelliRow> newRows = buildRowsForOneRow(graph, orgTable, (BaseRow) orgRow, pivot, null);
@@ -120,7 +122,7 @@ public class IntelliTable extends CompositeTable {
         }
     }
 
-    private ArrayList<IntelliRow> buildRowsForOneRow(final CompositeTableGraph graph, final DataTable orgTable, final BaseRow orgRow,
+    private ArrayList<IntelliRow> buildRowsForOneRow(final BaseTableGraph graph, final DataTable orgTable, final BaseRow orgRow,
             final PivotKeyHeader pivot, final RowGroup rowGroup) {
         final ArrayList<IntelliRow> newRows = new ArrayList<IntelliRow>();
 
@@ -141,7 +143,7 @@ public class IntelliTable extends CompositeTable {
         return newRows;
     }
 
-    private IntelliRow buildOneRow(final CompositeTableGraph graph, final DataTable orgTable, final BaseRow orgRow, final BaseCell pivotCell,
+    private IntelliRow buildOneRow(final BaseTableGraph graph, final DataTable orgTable, final BaseRow orgRow, final BaseCell pivotCell,
             final RowGroup rowGroup) {
         final IntelliRow newRow = new IntelliRow(this, this.tmpHeaders.size());
 
@@ -178,7 +180,7 @@ public class IntelliTable extends CompositeTable {
         return this.tmpHeaders.contains(header);
     }
 
-    private BaseHeader findClosestHeaderInGraph(final CompositeTableGraph graph, BaseHeader abstractHeader) {
+    private BaseHeader findClosestHeaderInGraph(final BaseTableGraph graph, BaseHeader abstractHeader) {
         if (graph == null || graph.getTable() == null) {
             return abstractHeader;
         }

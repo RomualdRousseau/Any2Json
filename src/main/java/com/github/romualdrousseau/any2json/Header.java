@@ -1,7 +1,7 @@
 package com.github.romualdrousseau.any2json;
 
-public interface Header
-{
+public interface Header {
+
     String getName();
 
     Cell getCellAtRow(Row row);

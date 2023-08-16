@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.github.romualdrousseau.any2json.Sheet;
 import com.github.romualdrousseau.any2json.SheetEvent;
-import com.github.romualdrousseau.any2json.intelli.DataTable;
+import com.github.romualdrousseau.any2json.base.DataTable;
 
 public class DataTableListBuiltEvent extends SheetEvent {
 
