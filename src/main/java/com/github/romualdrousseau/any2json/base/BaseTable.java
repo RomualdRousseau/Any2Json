@@ -9,7 +9,7 @@ import com.github.romualdrousseau.any2json.Row;
 import com.github.romualdrousseau.any2json.Table;
 import com.github.romualdrousseau.any2json.util.Visitable;
 
-public abstract class BaseTable implements Table, Visitable {
+public class BaseTable implements Table, Visitable {
 
     public BaseTable(final BaseSheet sheet, final int firstColumn, final int firstRow, final int lastColumn,
             final int lastRow) {
@@ -117,6 +117,20 @@ public abstract class BaseTable implements Table, Visitable {
     @Override
     public void setVisited(final boolean flag) {
         this.visited = flag;
+    }
+
+    @Override
+    public void updateHeaderTags() {
+    }
+
+    @Override
+    public int getNumberOfHeaderTags() {
+        return 0;
+    }
+
+    @Override
+    public Iterable<Header> headerTags() {
+        return null;
     }
 
     public BaseSheet getSheet() {

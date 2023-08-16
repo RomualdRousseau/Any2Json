@@ -1,7 +1,7 @@
 package com.github.romualdrousseau.any2json;
 
-public class HeaderTag
-{
+public class HeaderTag {
+
     public final static HeaderTag None = new HeaderTag("none");
 
     public HeaderTag(final String value) {

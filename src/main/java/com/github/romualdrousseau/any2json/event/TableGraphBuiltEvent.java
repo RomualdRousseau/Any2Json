@@ -5,17 +5,17 @@ import java.io.PrintStream;
 import com.github.romualdrousseau.any2json.Header;
 import com.github.romualdrousseau.any2json.Sheet;
 import com.github.romualdrousseau.any2json.SheetEvent;
-import com.github.romualdrousseau.any2json.intelli.DataTable;
-import com.github.romualdrousseau.any2json.intelli.CompositeTableGraph;
+import com.github.romualdrousseau.any2json.base.BaseTableGraph;
+import com.github.romualdrousseau.any2json.base.DataTable;
 
 public class TableGraphBuiltEvent extends SheetEvent {
 
-    public TableGraphBuiltEvent(final Sheet source, final CompositeTableGraph tableGraph) {
+    public TableGraphBuiltEvent(final Sheet source, final BaseTableGraph tableGraph) {
         super(source);
         this.tableGraph = tableGraph;
     }
 
-    public CompositeTableGraph getTableGraph() {
+    public BaseTableGraph getTableGraph() {
         return this.tableGraph;
     }
 
@@ -26,7 +26,7 @@ public class TableGraphBuiltEvent extends SheetEvent {
         con.println("================================== END ==================================");
     }
 
-    private int walkThroughTableGraph(final PrintStream con, final CompositeTableGraph graph, final int indent, int counter) {
+    private int walkThroughTableGraph(final PrintStream con, final BaseTableGraph graph, final int indent, int counter) {
         if (!graph.isRoot()) {
             final StringBuffer out = new StringBuffer();
 
@@ -59,12 +59,12 @@ public class TableGraphBuiltEvent extends SheetEvent {
             con.println(out.toString());
         }
 
-        for (final CompositeTableGraph child : graph.children()) {
+        for (final BaseTableGraph child : graph.children()) {
             counter = walkThroughTableGraph(con, child, indent + 1, counter);
         }
 
         return counter;
     }
 
-    private final CompositeTableGraph tableGraph;
+    private final BaseTableGraph tableGraph;
 }
