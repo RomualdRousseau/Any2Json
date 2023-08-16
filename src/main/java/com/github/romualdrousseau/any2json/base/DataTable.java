@@ -5,19 +5,18 @@ import java.util.LinkedList;
 
 import com.github.romualdrousseau.any2json.Document;
 import com.github.romualdrousseau.any2json.Header;
-import com.github.romualdrousseau.any2json.header.CompositeHeader;
+import com.github.romualdrousseau.any2json.header.DataTableHeader;
 import com.github.romualdrousseau.any2json.header.IntelliHeader;
 import com.github.romualdrousseau.any2json.header.MetaTableHeader;
 import com.github.romualdrousseau.any2json.header.PivotKeyHeader;
-import com.github.romualdrousseau.any2json.header.SimpleHeader;
 
 public class DataTable extends BaseTable {
 
     public DataTable(final BaseSheet sheet) {
-        super(sheet, 0, 0, 0, 0);
+        super(sheet, 0, 0, sheet.getLastColumnNum(), sheet.getLastRowNum());
     }
 
-    public DataTable(BaseTable table) {
+    public DataTable(final BaseTable table) {
         super(table);
     }
 
@@ -29,7 +28,7 @@ public class DataTable extends BaseTable {
         return this.rowGroups;
     }
 
-    public void addRowGroup(RowGroup rowGroup) {
+    public void addRowGroup(final RowGroup rowGroup) {
         this.rowGroups.add(rowGroup);
     }
 
@@ -57,18 +56,18 @@ public class DataTable extends BaseTable {
 
     @Override
     public void updateHeaderTags() {
-        for (Header header : this.headers()) {
-            ((IntelliHeader) header).resetTag();
+        for (final Header header : this.headers()) {
+            ((DataTableHeader) header).resetTag();
         }
 
-        for (Header header : this.headers()) {
-            ((IntelliHeader) header).updateTag();
+        for (final Header header : this.headers()) {
+            ((DataTableHeader) header).updateTag();
         }
 
-        for (Header header : this.headers()) {
+        for (final Header header : this.headers()) {
             if (header.hasTag() && !header.getTag().isUndefined()) {
-                Header head = this.headersByTag.putIfAbsent(header.getTag().getValue(), header);
-                if (head != null) {
+                final Header head = this.headersByTag.putIfAbsent(header.getTag().getValue(), header);
+                if (head != null && head instanceof IntelliHeader && header instanceof IntelliHeader) {
                     ((IntelliHeader) head).mergeTo((IntelliHeader) header);
                 }
             }
@@ -89,16 +88,16 @@ public class DataTable extends BaseTable {
         this.setLoadCompleted(true); // Give chance to pivot header value to update their name
         if (this.getSheet().getDocument().getHints().contains(Document.Hint.INTELLI_TAG)) {
             for (int i = 0; i < this.getNumberOfHeaders(); i++) {
-                this.setHeader(i, new IntelliHeader((CompositeHeader) this.getHeaderAt(i)));
+                this.setHeader(i, new IntelliHeader(this.getHeaderAt(i)));
             }
         } else {
             for (int i = 0; i < this.getNumberOfHeaders(); i++) {
-                this.setHeader(i, new SimpleHeader(this.getHeaderAt(i)));
+                this.setHeader(i, new DataTableHeader(this.getHeaderAt(i)));
             }
         }
     }
 
-    private final HashMap<String, Header> headersByTag = new HashMap<String, Header>();
+    private final HashMap<String, Header> headersByTag = new HashMap<>();
 
-    private final LinkedList<RowGroup> rowGroups = new LinkedList<RowGroup>();
+    private final LinkedList<RowGroup> rowGroups = new LinkedList<>();
 }
