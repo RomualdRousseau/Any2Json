@@ -17,9 +17,9 @@ public class SimpleTagClassifier implements TagClassifier{
 
     private String ensureTagStyle(final String text) {
         if (text.indexOf(" ") > 0) {
-            return text.replaceAll("\\w+", "_").toLowerCase().replaceAll("[^a-z0-9_]", "");
+            return text.replaceAll("\\W+", " ").trim().replaceAll(" ", "_").toLowerCase();
         } else {
-            return text.replaceAll("[^a-zA-Z0-9_]", "");
+            return text.replaceAll("\\W+", "");
         }
     }
 }
