@@ -61,7 +61,7 @@ public class BaseRow implements Row {
         BaseCell result = cachedCells[colIndex];
         if (result == null) {
             final String v = this.getCellValueAt(colIndex);
-            result = new BaseCell(v, colIndex, this.getNumberOfMergedCellsAt(colIndex), this.table.getSheet().getClassifierFactory());
+            result = new BaseCell(v, colIndex, this.getNumberOfMergedCellsAt(colIndex), this.table.getSheet());
             cachedCells[colIndex] = result;
         }
         return result;

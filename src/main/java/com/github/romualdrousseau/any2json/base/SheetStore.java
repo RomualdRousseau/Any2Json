@@ -1,8 +1,6 @@
 package com.github.romualdrousseau.any2json.base;
 
 public interface SheetStore {
-    
-    String getName();
 
     int getLastColumnNum(int rowIndex);
 
