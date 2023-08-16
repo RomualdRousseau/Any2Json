@@ -1,6 +1,7 @@
 package com.github.romualdrousseau.any2json.header;
 
 import com.github.romualdrousseau.any2json.base.BaseCell;
+import com.github.romualdrousseau.any2json.base.BaseHeader;
 import com.github.romualdrousseau.any2json.base.BaseTable;
 import com.github.romualdrousseau.any2json.base.RowGroup;
 
@@ -21,7 +22,7 @@ public class MetaTableHeader extends MetaHeader {
     }
 
     @Override
-    public CompositeHeader clone() {
+    public BaseHeader clone() {
         return new MetaTableHeader(this);
     }
 

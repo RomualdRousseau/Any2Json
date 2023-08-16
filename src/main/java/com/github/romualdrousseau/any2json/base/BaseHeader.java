@@ -76,6 +76,8 @@ public abstract class BaseHeader implements Header {
 
     public abstract String getValue();
 
+    public abstract BaseHeader clone();
+
     private BaseTable table;
     private final BaseCell cell;
     private int colIndex;

@@ -7,14 +7,15 @@ import com.github.romualdrousseau.any2json.DocumentFactory;
 import com.github.romualdrousseau.any2json.HeaderTag;
 import com.github.romualdrousseau.any2json.Row;
 import com.github.romualdrousseau.any2json.base.BaseCell;
+import com.github.romualdrousseau.any2json.base.BaseHeader;
 import com.github.romualdrousseau.any2json.base.BaseRow;
 import com.github.romualdrousseau.any2json.base.BaseTable;
 import com.github.romualdrousseau.shuju.types.Tensor;
 import com.github.romualdrousseau.shuju.util.StringUtils;
 
-public class IntelliHeader extends CompositeHeader {
+public class IntelliHeader extends DataTableHeader {
 
-    public IntelliHeader(final CompositeHeader header) {
+    public IntelliHeader(final BaseHeader header) {
         this(header.getTable(), new BaseCell(header.getName(), header.getColumnIndex(), 1, header.getCell().getRawValue(), header.getTable().getSheet()), false);
         this.setColumnIndex(header.getColumnIndex());
     }
@@ -37,11 +38,6 @@ public class IntelliHeader extends CompositeHeader {
     @Override
     public String getName() {
         return this.name;
-    }
-
-    @Override
-    public String getValue() {
-        return null;
     }
 
     @Override
@@ -71,7 +67,7 @@ public class IntelliHeader extends CompositeHeader {
     }
 
     @Override
-    public CompositeHeader clone() {
+    public BaseHeader clone() {
         return new IntelliHeader(this);
     }
 
@@ -90,11 +86,13 @@ public class IntelliHeader extends CompositeHeader {
         return (BaseTable) super.getTable();
     }
 
+    @Override
     public void resetTag() {
         this.tag = null;
         this.nextSibbling = null;
     }
 
+    @Override
     public void updateTag() {
         if (StringUtils.isFastBlank(this.getName())) {
             this.tag = HeaderTag.None;

@@ -12,7 +12,6 @@ import com.github.romualdrousseau.any2json.base.BaseTableGraph;
 import com.github.romualdrousseau.any2json.base.DataTable;
 import com.github.romualdrousseau.any2json.base.BaseRow;
 import com.github.romualdrousseau.any2json.base.RowGroup;
-import com.github.romualdrousseau.any2json.header.CompositeHeader;
 import com.github.romualdrousseau.any2json.header.PivotKeyHeader;
 import com.github.romualdrousseau.shuju.util.StringUtils;
 
@@ -54,18 +53,18 @@ public class IntelliTable extends DataTable {
     private void buildHeaders(final BaseTableGraph graph) {
         for (final BaseTableGraph child : graph.children()) {
             for (final Header header : child.getTable().headers()) {
-                final CompositeHeader compositeHeader = (CompositeHeader) header;
-                if (this.checkIfHeaderExists(compositeHeader)) {
+                final BaseHeader baseHeader = (BaseHeader) header;
+                if (this.checkIfHeaderExists(baseHeader)) {
                     continue;
                 }
 
-                CompositeHeader newHeader = compositeHeader.clone();
+                BaseHeader newHeader = baseHeader.clone();
                 newHeader.setTable(this);
                 newHeader.setColumnIndex(this.tmpHeaders.size());
                 this.tmpHeaders.add(newHeader);
 
                 if (header instanceof PivotKeyHeader) {
-                    newHeader = ((PivotKeyHeader) compositeHeader).getPivotValue();
+                    newHeader = ((PivotKeyHeader) baseHeader).getPivotValue();
                     newHeader.setTable(this);
                     newHeader.setColumnIndex(this.tmpHeaders.size());
                     this.tmpHeaders.add(newHeader);
@@ -113,7 +112,7 @@ public class IntelliTable extends DataTable {
                     if (rowGroup.getRow() + i >= orgTable.getNumberOfRows()) {
                         break;
                     }
-                    Row orgRow = orgTable.getRowAt(rowGroup.getRow() + i);
+                    final Row orgRow = orgTable.getRowAt(rowGroup.getRow() + i);
                     final ArrayList<IntelliRow> newRows = buildRowsForOneRow(graph, orgTable, (BaseRow) orgRow, pivot,
                             rowGroup);
                     this.rows.addAll(newRows);
@@ -148,7 +147,7 @@ public class IntelliTable extends DataTable {
         final IntelliRow newRow = new IntelliRow(this, this.tmpHeaders.size());
 
         for (final BaseHeader abstractHeader : this.tmpHeaders) {
-            List<Header> orgHeaders = orgTable.findHeader(abstractHeader);
+            final List<Header> orgHeaders = orgTable.findHeader(abstractHeader);
 
             if (abstractHeader instanceof PivotKeyHeader && pivotCell != null) {
                 if (orgHeaders.size() > 0) {
@@ -158,8 +157,8 @@ public class IntelliTable extends DataTable {
                 }
             } else {
                 if (orgHeaders.size() > 0) {
-                    for(Header orgHeader : orgHeaders) {
-                        BaseHeader orgAbstractHeader = (BaseHeader) orgHeader;
+                    for(final Header orgHeader : orgHeaders) {
+                        final BaseHeader orgAbstractHeader = (BaseHeader) orgHeader;
                         if (rowGroup == null || !orgAbstractHeader.isRowGroupName()) {
                             newRow.setCell(abstractHeader.getColumnIndex(), orgAbstractHeader.getCellAtRow(orgRow));
                         } else {
@@ -180,7 +179,7 @@ public class IntelliTable extends DataTable {
         return this.tmpHeaders.contains(header);
     }
 
-    private BaseHeader findClosestHeaderInGraph(final BaseTableGraph graph, BaseHeader abstractHeader) {
+    private BaseHeader findClosestHeaderInGraph(final BaseTableGraph graph, final BaseHeader abstractHeader) {
         if (graph == null || graph.getTable() == null) {
             return abstractHeader;
         }
@@ -200,6 +199,6 @@ public class IntelliTable extends DataTable {
         }
     }
 
-    private final ArrayList<CompositeHeader> tmpHeaders = new ArrayList<CompositeHeader>();
-    private final ArrayList<IntelliRow> rows = new ArrayList<IntelliRow>();
+    private final ArrayList<BaseHeader> tmpHeaders = new ArrayList<>();
+    private final ArrayList<IntelliRow> rows = new ArrayList<>();
 }
