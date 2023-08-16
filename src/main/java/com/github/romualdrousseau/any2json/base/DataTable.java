@@ -55,6 +55,16 @@ public class DataTable extends BaseTable {
 	}
 
     @Override
+    public int getNumberOfHeaderTags() {
+        return this.headersByTag.size();
+    }
+
+    @Override
+    public Iterable<Header> headerTags() {
+        return this.headersByTag.values();
+    }
+
+    @Override
     public void updateHeaderTags() {
         for (final Header header : this.headers()) {
             ((DataTableHeader) header).resetTag();
@@ -72,16 +82,6 @@ public class DataTable extends BaseTable {
                 }
             }
         }
-    }
-
-    @Override
-    public int getNumberOfHeaderTags() {
-        return this.headersByTag.size();
-    }
-
-    @Override
-    public Iterable<Header> headerTags() {
-        return this.headersByTag.values();
     }
 
     public void prepareHeaders() {
