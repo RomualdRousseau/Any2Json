@@ -40,8 +40,8 @@ public class DataTable extends BaseTable {
                 break;
             }
         }
-		return result;
-	}
+        return result;
+    }
 
     public PivotKeyHeader findFirstPivotHeader() {
         PivotKeyHeader result = null;
@@ -51,8 +51,8 @@ public class DataTable extends BaseTable {
                 break;
             }
         }
-		return result;
-	}
+        return result;
+    }
 
     public int getNumberOfHeaderTags() {
         return this.headersByTag.size();
@@ -105,7 +105,8 @@ public class DataTable extends BaseTable {
 
     public void prepareHeaders() {
         this.setLoadCompleted(true); // Give chance to pivot header value to update their name
-        if (this.getSheet().getDocument().getHints().contains(Document.Hint.INTELLI_TAG)) {
+        if (this.getSheet().getDocument().getHints().contains(Document.Hint.INTELLI_TAG)
+                || this.getSheet().getDocument().getHints().contains(Document.Hint.INTELLI_LAYOUT)) {
             for (int i = 0; i < this.getNumberOfHeaders(); i++) {
                 this.setHeader(i, new IntelliHeader(this.getHeaderAt(i)));
             }

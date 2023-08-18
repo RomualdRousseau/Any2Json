@@ -63,23 +63,38 @@ public abstract class BaseDocument implements Document {
         return this.sheetParser;
     }
 
-    public TableParser getElementParser() {
-        return this.elementParser;
+    public BaseDocument setSheetParser(SheetParser sheetParser) {
+        this.sheetParser = sheetParser;
+        return this;
+    }
+
+    public TableParser getTableParser() {
+        return this.tableParser;
+    }
+
+    public BaseDocument setTableParser(TableParser tableParser) {
+        this.tableParser = tableParser;
+        return this;
     }
 
     public TagClassifier getTagClassifier() {
         return this.tagClassifier;
     }
 
+    public BaseDocument setTagClassifier(TagClassifier tagClassifier) {
+        this.tagClassifier = tagClassifier;
+        return this;
+    }
+
     protected void updateParsersAndClassifiers() {
         if(this.hints.contains(Document.Hint.NONE)) {
             this.sheetParser = new StructuredSheetParser();
-            this.elementParser = new SimpleTableParser();
+            this.tableParser = new SimpleTableParser();
             this.tagClassifier = new SimpleTagClassifier();
         }
         if(this.hints.contains(Document.Hint.INTELLI_LAYOUT)) {
             this.sheetParser = new SemiStructuredSheetBitmapParser();
-            this.elementParser = DynamicPackages.GetElementParserFactory()
+            this.tableParser = DynamicPackages.GetElementParserFactory()
                 .map(x -> x.newInstance(this.model))
                 .orElseGet(SimpleTableParser::new);
         }
@@ -94,6 +109,6 @@ public abstract class BaseDocument implements Document {
     private EnumSet<Hint> hints = EnumSet.of(Document.Hint.NONE);
     private String recipe = "";
     private SheetParser sheetParser;
-    private TableParser elementParser;
+    private TableParser tableParser;
     private TagClassifier tagClassifier;
 }
