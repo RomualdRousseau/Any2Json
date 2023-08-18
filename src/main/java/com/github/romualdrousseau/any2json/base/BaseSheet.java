@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.github.romualdrousseau.any2json.Document;
 import com.github.romualdrousseau.any2json.DocumentFactory;
 import com.github.romualdrousseau.any2json.Sheet;
 import com.github.romualdrousseau.any2json.SheetEvent;
@@ -66,7 +67,7 @@ public class BaseSheet implements Sheet {
             return Optional.empty();
         }
 
-        final List<DataTable> dataTables = this.getDocument().getElementParser().getDataTables(this, tables);
+        final List<DataTable> dataTables = this.getDocument().getTableParser().getDataTables(this, tables);
         if (!this.notifyStepCompleted(new DataTableListBuiltEvent(this, dataTables))) {
             return Optional.empty();
         }
@@ -74,20 +75,20 @@ public class BaseSheet implements Sheet {
             return Optional.empty();
         }
 
-        final List<MetaTable> metaTables = this.getDocument().getElementParser().getMetaTables(this, tables);
+        final List<MetaTable> metaTables = this.getDocument().getTableParser().getMetaTables(this, tables);
         if (!this.notifyStepCompleted(new MetaTableListBuiltEvent(this, metaTables))) {
             return Optional.empty();
         }
 
         final DataTable table;
-        if (dataTables.size() == 1 && metaTables.size() == 0) {
-            table = dataTables.get(0);
-        } else {
+        if (this.getDocument().getHints().contains(Document.Hint.INTELLI_LAYOUT)) {
             final BaseTableGraph root = BaseTableGraphBuilder.Build(metaTables, dataTables);
             if (!this.notifyStepCompleted(new TableGraphBuiltEvent(this, root))) {
                 return Optional.empty();
             }
             table = new IntelliTable(this, root);
+        } else {
+            table = dataTables.get(0);
         }
         table.prepareHeaders();
         table.updateHeaderTags();

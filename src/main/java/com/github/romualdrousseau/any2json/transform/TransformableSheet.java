@@ -35,11 +35,11 @@ public class TransformableSheet {
     }
 
     public void disablePivot() {
-        this.sheet.getDocument().getElementParser().disablePivot();
+        this.sheet.getDocument().getTableParser().disablePivot();
     }
 
     public void setDataTableParserFactory(String options) {
-        this.sheet.getDocument().getElementParser().setParserOptions(options);
+        this.sheet.getDocument().getTableParser().setParserOptions(options);
     }
 
     public void unmergeAll() {
