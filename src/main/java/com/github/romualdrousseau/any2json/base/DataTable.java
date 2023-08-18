@@ -57,8 +57,11 @@ public class DataTable extends BaseTable {
     @Override
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
+=======
+>>>>>>> 211ae68c3164706a42cd34cb74fab565390d946d
     public int getNumberOfHeaderTags() {
         return this.headersByTag.size();
     }
@@ -69,7 +72,10 @@ public class DataTable extends BaseTable {
     }
 
     @Override
+<<<<<<< HEAD
 >>>>>>> 4e67360 (Cleanup)
+=======
+>>>>>>> 211ae68c3164706a42cd34cb74fab565390d946d
     public void updateHeaderTags() {
         for (final Header header : this.headers()) {
             ((DataTableHeader) header).resetTag();
@@ -89,6 +95,7 @@ public class DataTable extends BaseTable {
         }
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     @Override
 >>>>>>> d589a91 (Cleanup headers)
@@ -136,6 +143,8 @@ public class DataTable extends BaseTable {
 <<<<<<< HEAD
 =======
 >>>>>>> 4e67360 (Cleanup)
+=======
+>>>>>>> 211ae68c3164706a42cd34cb74fab565390d946d
     public void prepareHeaders() {
         this.setLoadCompleted(true); // Give chance to pivot header value to update their name
         if (this.getSheet().getDocument().getHints().contains(Document.Hint.INTELLI_TAG)) {
@@ -151,9 +160,12 @@ public class DataTable extends BaseTable {
 
     private final HashMap<String, Header> headersByTag = new HashMap<>();
 
+<<<<<<< HEAD
 =======
     private final HashMap<String, Header> headersByTag = new HashMap<>();
 
 >>>>>>> d589a91 (Cleanup headers)
+=======
+>>>>>>> 211ae68c3164706a42cd34cb74fab565390d946d
     private final LinkedList<RowGroup> rowGroups = new LinkedList<>();
 }
