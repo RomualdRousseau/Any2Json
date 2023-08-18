@@ -54,14 +54,6 @@ public class DataTable extends BaseTable {
 		return result;
 	}
 
-    @Override
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
-=======
->>>>>>> 211ae68c3164706a42cd34cb74fab565390d946d
     public int getNumberOfHeaderTags() {
         return this.headersByTag.size();
     }
@@ -72,10 +64,6 @@ public class DataTable extends BaseTable {
     }
 
     @Override
-<<<<<<< HEAD
->>>>>>> 4e67360 (Cleanup)
-=======
->>>>>>> 211ae68c3164706a42cd34cb74fab565390d946d
     public void updateHeaderTags() {
         for (final Header header : this.headers()) {
             ((DataTableHeader) header).resetTag();
@@ -95,56 +83,6 @@ public class DataTable extends BaseTable {
         }
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    @Override
->>>>>>> d589a91 (Cleanup headers)
-    public int getNumberOfHeaderTags() {
-        return this.headersByTag.size();
-    }
-
-    @Override
-    public Iterable<Header> headerTags() {
-        return this.headersByTag.values();
-    }
-
-<<<<<<< HEAD
-    @Override
-    public void updateHeaderTags() {
-        for (final Header header : this.headers()) {
-            ((DataTableHeader) header).resetTag();
-        }
-
-        for (final Header header : this.headers()) {
-            ((DataTableHeader) header).updateTag();
-        }
-
-        for (final Header header : this.headers()) {
-            if (header.hasTag() && !header.getTag().isUndefined()) {
-                final Header head = this.headersByTag.putIfAbsent(header.getTag().getValue(), header);
-                if (head != null && head instanceof IntelliHeader && header instanceof IntelliHeader) {
-                    ((IntelliHeader) head).mergeTo((IntelliHeader) header);
-                }
-=======
-    public void prepareHeaders() {
-        this.setLoadCompleted(true); // Give chance to pivot header value to update their name
-        if (this.getSheet().getDocument().getHints().contains(Document.Hint.INTELLI_TAG)) {
-            for (int i = 0; i < this.getNumberOfHeaders(); i++) {
-                this.setHeader(i, new IntelliHeader(this.getHeaderAt(i)));
-            }
-        } else {
-            for (int i = 0; i < this.getNumberOfHeaders(); i++) {
-                this.setHeader(i, new DataTableHeader(this.getHeaderAt(i)));
->>>>>>> d589a91 (Cleanup headers)
-            }
-        }
-    }
-
-<<<<<<< HEAD
-=======
->>>>>>> 4e67360 (Cleanup)
-=======
->>>>>>> 211ae68c3164706a42cd34cb74fab565390d946d
     public void prepareHeaders() {
         this.setLoadCompleted(true); // Give chance to pivot header value to update their name
         if (this.getSheet().getDocument().getHints().contains(Document.Hint.INTELLI_TAG)) {
@@ -159,13 +97,5 @@ public class DataTable extends BaseTable {
     }
 
     private final HashMap<String, Header> headersByTag = new HashMap<>();
-
-<<<<<<< HEAD
-=======
-    private final HashMap<String, Header> headersByTag = new HashMap<>();
-
->>>>>>> d589a91 (Cleanup headers)
-=======
->>>>>>> 211ae68c3164706a42cd34cb74fab565390d946d
     private final LinkedList<RowGroup> rowGroups = new LinkedList<>();
 }
