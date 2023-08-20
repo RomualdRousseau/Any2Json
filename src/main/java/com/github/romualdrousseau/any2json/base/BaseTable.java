@@ -46,6 +46,11 @@ public class BaseTable implements Table, Visitable {
     }
 
     @Override
+    public BaseSheet getSheet() {
+        return this.sheet;
+    }
+
+    @Override
     public int getNumberOfColumns() {
         return this.lastColumn - this.firstColumn + 1;
     }
@@ -131,10 +136,6 @@ public class BaseTable implements Table, Visitable {
     @Override
     public Iterable<Header> headerTags() {
         return null;
-    }
-
-    public BaseSheet getSheet() {
-        return this.sheet;
     }
 
     public int getFirstColumn() {

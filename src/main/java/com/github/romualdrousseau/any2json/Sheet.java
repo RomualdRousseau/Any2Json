@@ -4,6 +4,8 @@ import java.util.Optional;
 
 public interface Sheet {
 
+    Document getDocument();
+
     String getName();
 
     int getLastRowNum();

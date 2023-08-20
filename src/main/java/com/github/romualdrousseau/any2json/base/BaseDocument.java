@@ -21,6 +21,21 @@ public abstract class BaseDocument implements Document {
     }
 
     @Override
+    public SheetParser getSheetParser() {
+        return this.sheetParser;
+    }
+
+    @Override
+    public TableParser getTableParser() {
+        return this.tableParser;
+    }
+
+    @Override
+    public TagClassifier getTagClassifier() {
+        return this.tagClassifier;
+    }
+
+    @Override
     public Model getModel() {
         return this.model;
     }
@@ -59,26 +74,14 @@ public abstract class BaseDocument implements Document {
         return new SheetIterable(this);
     }
 
-    public SheetParser getSheetParser() {
-        return this.sheetParser;
-    }
-
     public BaseDocument setSheetParser(SheetParser sheetParser) {
         this.sheetParser = sheetParser;
         return this;
     }
 
-    public TableParser getTableParser() {
-        return this.tableParser;
-    }
-
     public BaseDocument setTableParser(TableParser tableParser) {
         this.tableParser = tableParser;
         return this;
-    }
-
-    public TagClassifier getTagClassifier() {
-        return this.tagClassifier;
     }
 
     public BaseDocument setTagClassifier(TagClassifier tagClassifier) {
@@ -87,11 +90,9 @@ public abstract class BaseDocument implements Document {
     }
 
     protected void updateParsersAndClassifiers() {
-        if(this.hints.contains(Document.Hint.NONE)) {
-            this.sheetParser = new StructuredSheetParser();
-            this.tableParser = new SimpleTableParser();
-            this.tagClassifier = new SimpleTagClassifier();
-        }
+        this.sheetParser = new StructuredSheetParser();
+        this.tableParser = new SimpleTableParser();
+        this.tagClassifier = new SimpleTagClassifier();
         if(this.hints.contains(Document.Hint.INTELLI_LAYOUT)) {
             this.sheetParser = new SemiStructuredSheetBitmapParser();
             this.tableParser = DynamicPackages.GetElementParserFactory()
@@ -106,7 +107,7 @@ public abstract class BaseDocument implements Document {
     }
 
     private Model model = Model.Default;
-    private EnumSet<Hint> hints = EnumSet.of(Document.Hint.NONE);
+    private EnumSet<Hint> hints = EnumSet.noneOf(Document.Hint.class);
     private String recipe = "";
     private SheetParser sheetParser;
     private TableParser tableParser;

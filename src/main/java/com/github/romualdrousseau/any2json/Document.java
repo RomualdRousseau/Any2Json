@@ -6,10 +6,15 @@ import java.util.EnumSet;
 public interface Document extends AutoCloseable {
 
     enum Hint {
-        NONE,
         INTELLI_LAYOUT,
         INTELLI_TAG
     }
+
+    SheetParser getSheetParser();
+
+    TableParser getTableParser();
+
+    TagClassifier getTagClassifier();
 
     boolean open(File file, String encoding, final String password);
 

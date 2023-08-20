@@ -32,6 +32,11 @@ public class BaseSheet implements Sheet {
     }
 
     @Override
+    public Document getDocument() {
+        return this.document;
+    }
+
+    @Override
     public String getName() {
         return this.name;
     }
@@ -96,10 +101,6 @@ public class BaseSheet implements Sheet {
         this.notifyStepCompleted(new TableReadyEvent(this, table));
 
         return Optional.ofNullable(table);
-    }
-
-    public BaseDocument getDocument() {
-        return this.document;
     }
 
     public SheetStore getSheetStore() {

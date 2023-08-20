@@ -2,6 +2,8 @@ package com.github.romualdrousseau.any2json;
 
 public interface Table {
 
+    Sheet getSheet();
+
     int getNumberOfColumns();
 
     int getNumberOfRows();
