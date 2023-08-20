@@ -7,6 +7,7 @@ import com.github.romualdrousseau.any2json.base.BaseSheet;
 import com.github.romualdrousseau.any2json.transform.op.DropColumn;
 import com.github.romualdrousseau.any2json.transform.op.DropColumnsWhenEntropyLessThan;
 import com.github.romualdrousseau.any2json.transform.op.DropColumnsWhenFillRatioLessThan;
+import com.github.romualdrousseau.any2json.transform.op.DropRow;
 import com.github.romualdrousseau.any2json.transform.op.DropRowsWhenEntropyLessThan;
 import com.github.romualdrousseau.any2json.transform.op.DropRowsWhenFillRatioLessThan;
 import com.github.romualdrousseau.any2json.transform.op.MergeCell;
@@ -76,8 +77,7 @@ public class TransformableSheet {
     }
 
     public void dropRow(final int rowIndex) {
-        this.sheet.markRowAsNull(rowIndex);
-        this.sheet.removeAllNullRows();
+        DropRow.Apply(this.sheet, rowIndex);
     }
 
     public void dropNullRows(final float fillRatio) {

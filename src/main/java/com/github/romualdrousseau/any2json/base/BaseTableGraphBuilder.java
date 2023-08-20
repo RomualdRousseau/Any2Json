@@ -2,8 +2,6 @@ package com.github.romualdrousseau.any2json.base;
 
 import java.util.List;
 
-import com.github.romualdrousseau.any2json.util.Visitable;
-
 public class BaseTableGraphBuilder {
 
     public static BaseTableGraph Build(final List<MetaTable> metaTables, final List<DataTable> dataTables) {

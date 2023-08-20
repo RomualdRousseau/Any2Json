@@ -1,4 +1,4 @@
-package com.github.romualdrousseau.any2json.util;
+package com.github.romualdrousseau.any2json.base;
 
 public interface Visitable
 {
