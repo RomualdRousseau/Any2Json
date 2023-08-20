@@ -54,25 +54,6 @@ public class DataTable extends BaseTable {
         return result;
     }
 
-    public int getNumberOfHeaderTags() {
-        return this.headersByTag.size();
-    }
-
-    @Override
-    public Iterable<Header> headerTags() {
-        return this.headersByTag.values();
-    }
-
-    @Override
-    public int getNumberOfHeaderTags() {
-        return this.headersByTag.size();
-    }
-
-    @Override
-    public Iterable<Header> headerTags() {
-        return this.headersByTag.values();
-    }
-
     @Override
     public int getNumberOfHeaderTags() {
         return this.headersByTag.size();
