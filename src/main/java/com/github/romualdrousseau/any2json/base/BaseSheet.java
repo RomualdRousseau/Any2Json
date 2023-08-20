@@ -18,7 +18,7 @@ import com.github.romualdrousseau.any2json.event.TableGraphBuiltEvent;
 import com.github.romualdrousseau.any2json.event.TableReadyEvent;
 import com.github.romualdrousseau.any2json.intelli.IntelliTable;
 import com.github.romualdrousseau.any2json.transform.TransformableSheet;
-import com.github.romualdrousseau.shuju.util.CollectionUtils;
+import com.github.romualdrousseau.shuju.commons.CollectionUtils;
 
 public class BaseSheet implements Sheet {
 

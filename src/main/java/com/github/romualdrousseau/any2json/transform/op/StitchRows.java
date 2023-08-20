@@ -2,7 +2,7 @@ package com.github.romualdrousseau.any2json.transform.op;
 
 import com.github.romualdrousseau.any2json.DocumentFactory;
 import com.github.romualdrousseau.any2json.base.BaseSheet;
-import com.github.romualdrousseau.shuju.util.StringFuzzy;
+import com.github.romualdrousseau.shuju.strings.StringFuzzy;
 
 public class StitchRows {
 

@@ -13,7 +13,7 @@ import com.github.romualdrousseau.any2json.base.DataTable;
 import com.github.romualdrousseau.any2json.base.BaseRow;
 import com.github.romualdrousseau.any2json.base.RowGroup;
 import com.github.romualdrousseau.any2json.header.PivotKeyHeader;
-import com.github.romualdrousseau.shuju.util.StringUtils;
+import com.github.romualdrousseau.shuju.strings.StringUtils;
 
 public class IntelliTable extends DataTable {
 

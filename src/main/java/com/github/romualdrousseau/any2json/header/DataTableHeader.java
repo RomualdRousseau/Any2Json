@@ -7,7 +7,7 @@ import com.github.romualdrousseau.any2json.HeaderTag;
 import com.github.romualdrousseau.any2json.base.BaseCell;
 import com.github.romualdrousseau.any2json.base.BaseHeader;
 import com.github.romualdrousseau.any2json.base.BaseTable;
-import com.github.romualdrousseau.shuju.util.StringUtils;
+import com.github.romualdrousseau.shuju.strings.StringUtils;
 
 public class DataTableHeader extends BaseHeader {
 

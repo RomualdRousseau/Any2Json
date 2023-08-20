@@ -10,8 +10,8 @@ import com.github.romualdrousseau.any2json.base.BaseCell;
 import com.github.romualdrousseau.any2json.base.BaseHeader;
 import com.github.romualdrousseau.any2json.base.BaseRow;
 import com.github.romualdrousseau.any2json.base.BaseTable;
+import com.github.romualdrousseau.shuju.strings.StringUtils;
 import com.github.romualdrousseau.shuju.types.Tensor;
-import com.github.romualdrousseau.shuju.util.StringUtils;
 
 public class IntelliHeader extends DataTableHeader {
 

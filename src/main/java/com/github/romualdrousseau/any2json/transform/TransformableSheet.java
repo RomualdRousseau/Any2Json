@@ -10,7 +10,7 @@ import com.github.romualdrousseau.any2json.transform.op.DropColumnsWhenFillRatio
 import com.github.romualdrousseau.any2json.transform.op.DropRowsWhenEntropyLessThan;
 import com.github.romualdrousseau.any2json.transform.op.DropRowsWhenFillRatioLessThan;
 import com.github.romualdrousseau.any2json.transform.op.MergeCell;
-import com.github.romualdrousseau.shuju.util.StringUtils;
+import com.github.romualdrousseau.shuju.strings.StringUtils;
 
 public class TransformableSheet {
 

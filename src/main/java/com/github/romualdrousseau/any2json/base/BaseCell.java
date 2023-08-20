@@ -6,8 +6,8 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 import com.github.romualdrousseau.any2json.Cell;
+import com.github.romualdrousseau.shuju.strings.StringUtils;
 import com.github.romualdrousseau.shuju.types.Tensor;
-import com.github.romualdrousseau.shuju.util.StringUtils;
 
 public class BaseCell implements Cell, Symbol {
 
