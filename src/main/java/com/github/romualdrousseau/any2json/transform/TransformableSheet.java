@@ -2,6 +2,7 @@ package com.github.romualdrousseau.any2json.transform;
 
 import org.python.util.PythonInterpreter;
 
+import com.github.romualdrousseau.any2json.base.BaseDocument;
 import com.github.romualdrousseau.any2json.base.BaseSheet;
 import com.github.romualdrousseau.any2json.transform.op.DropColumn;
 import com.github.romualdrousseau.any2json.transform.op.DropColumnsWhenEntropyLessThan;
@@ -9,7 +10,6 @@ import com.github.romualdrousseau.any2json.transform.op.DropColumnsWhenFillRatio
 import com.github.romualdrousseau.any2json.transform.op.DropRowsWhenEntropyLessThan;
 import com.github.romualdrousseau.any2json.transform.op.DropRowsWhenFillRatioLessThan;
 import com.github.romualdrousseau.any2json.transform.op.MergeCell;
-import com.github.romualdrousseau.any2json.transform.op.StitchRows;
 import com.github.romualdrousseau.shuju.util.StringUtils;
 
 public class TransformableSheet {
@@ -23,7 +23,7 @@ public class TransformableSheet {
     }
 
     public void transformSheet() {
-        StitchRows.Apply(this.sheet);
+        ((BaseDocument) this.sheet.getDocument()).autoRecipe(this.sheet);
 
         final String recipe = this.sheet.getDocument().getRecipe();
         if (!StringUtils.isBlank(recipe)) {

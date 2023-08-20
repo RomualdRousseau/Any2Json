@@ -13,6 +13,7 @@ import com.github.romualdrousseau.any2json.config.DynamicPackages;
 import com.github.romualdrousseau.any2json.parser.sheet.SemiStructuredSheetBitmapParser;
 import com.github.romualdrousseau.any2json.parser.sheet.StructuredSheetParser;
 import com.github.romualdrousseau.any2json.parser.table.SimpleTableParser;
+import com.github.romualdrousseau.any2json.transform.op.StitchRows;
 
 public abstract class BaseDocument implements Document {
 
@@ -89,7 +90,13 @@ public abstract class BaseDocument implements Document {
         return this;
     }
 
-    protected void updateParsersAndClassifiers() {
+    public void autoRecipe(BaseSheet sheet) {
+        if (this.hints.contains(Document.Hint.INTELLI_LAYOUT)) {
+            StitchRows.Apply(sheet);
+        }
+    }
+
+    public void updateParsersAndClassifiers() {
         this.sheetParser = new StructuredSheetParser();
         this.tableParser = new SimpleTableParser();
         this.tagClassifier = new SimpleTagClassifier();
