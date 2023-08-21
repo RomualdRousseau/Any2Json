@@ -38,7 +38,6 @@ public class IntelliTable extends DataTable {
         if (rowIndex < 0 || rowIndex >= getNumberOfRows()) {
             throw new ArrayIndexOutOfBoundsException(rowIndex);
         }
-
         return this.rows.get(rowIndex);
     }
 
@@ -96,7 +95,7 @@ public class IntelliTable extends DataTable {
         }
 
         for (final BaseTableGraph child : graph.children()) {
-            buildTable(child, pivot);
+            this.buildTable(child, pivot);
         }
     }
 
