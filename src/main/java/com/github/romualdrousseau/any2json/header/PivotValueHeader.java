@@ -1,7 +1,5 @@
 package com.github.romualdrousseau.any2json.header;
 
-import com.github.romualdrousseau.any2json.config.Settings;
-
 public class PivotValueHeader extends PivotKeyHeader {
 
     public PivotValueHeader(final PivotKeyHeader parent) {
@@ -12,9 +10,9 @@ public class PivotValueHeader extends PivotKeyHeader {
     @Override
     public String getName() {
         if(!this.getTable().isLoadCompleted()) {
-            return Settings.PIVOT_VALUE_SUFFIX;
+            return this.getTable().getSheet().getPivotValueFormat();
         } else {
-            return this.name + " " + Settings.PIVOT_VALUE_SUFFIX;
+            return String.format(this.getTable().getSheet().getPivotValueFormat(), this.name);
         }
     }
 

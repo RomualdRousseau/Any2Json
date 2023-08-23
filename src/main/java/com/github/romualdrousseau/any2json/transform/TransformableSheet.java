@@ -60,6 +60,18 @@ public class TransformableSheet {
         this.sheet.setBitmapThreshold(bitmapThreshold);
     }
 
+    public void setPivotKeyFormat(final String format) {
+        this.sheet.setPivotKeyFormat(format);
+    }
+
+    public void setPivotValueFormat(final String format) {
+        this.sheet.setPivotValueFormat(format);
+    }
+
+    public void setGroupValueFormat(final String format) {
+        this.sheet.setGroupValueFormat(format);
+    }
+
     public void dropColumn(final int colIndex) {
         DropColumn.Apply(this.sheet, colIndex);
     }

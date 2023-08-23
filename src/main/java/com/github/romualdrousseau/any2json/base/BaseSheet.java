@@ -29,6 +29,10 @@ public class BaseSheet implements Sheet {
         this.storeLastColumnNum = this.computeLastColumnNum();
         this.columnMask = CollectionUtils.mutableRange(0, this.storeLastColumnNum + 1);
         this.rowMask = CollectionUtils.mutableRange(0, this.sheetStore.getLastRowNum() + 1);
+
+        this.pivotKeyFormat = "%s " + Settings.PIVOT_KEY_SUFFIX;
+        this.pivotValueFormat = "%s " + Settings.PIVOT_VALUE_SUFFIX;
+        this.groupValueFormat = "%s " + Settings.GROUP_VALUE_SUFFIX;
     }
 
     @Override
@@ -185,23 +189,11 @@ public class BaseSheet implements Sheet {
         this.sheetStore.patchCell(translatedColumn1, translatedRow1, translatedColumn2, translatedRow2, value, this.unmergedAll);
     }
 
-    public void unmergeAll() {
-        this.unmergedAll = true;
-    }
-
     public boolean notifyStepCompleted(final SheetEvent e) {
         for (final SheetListener listener : listeners) {
             listener.stepCompleted(e);
         }
         return !e.isCanceled();
-    }
-
-    public float getBitmapThreshold() {
-        return this.bitmapThreshold;
-    }
-
-    public void setBitmapThreshold(final float bitmapThreshold) {
-        this.bitmapThreshold = bitmapThreshold;
     }
 
     public void markColumnAsNull(final int colIndex) {
@@ -222,6 +214,42 @@ public class BaseSheet implements Sheet {
 
     public void removeAllNullRows() {
         this.rowMask.removeIf(i -> i == null);
+    }
+
+    public void unmergeAll() {
+        this.unmergedAll = true;
+    }
+
+    public float getBitmapThreshold() {
+        return this.bitmapThreshold;
+    }
+
+    public void setBitmapThreshold(final float bitmapThreshold) {
+        this.bitmapThreshold = bitmapThreshold;
+    }
+
+    public String getPivotKeyFormat() {
+        return this.pivotKeyFormat;
+    }
+
+    public void setPivotKeyFormat(final String format) {
+        this.pivotKeyFormat = format;
+    }
+
+    public String getPivotValueFormat() {
+        return this.pivotValueFormat;
+    }
+
+    public void setPivotValueFormat(final String format) {
+        this.pivotValueFormat = format;
+    }
+
+    public String getGroupValueFormat() {
+        return this.groupValueFormat;
+    }
+
+    public void setGroupValueFormat(final String format) {
+        this.groupValueFormat = format;
     }
 
     private int translateColumn(final int colIndex) {
@@ -256,6 +284,10 @@ public class BaseSheet implements Sheet {
     private final List<Integer> rowMask;
     private final List<Integer> columnMask;
     private final int storeLastColumnNum;
+
     private boolean unmergedAll = false;
     private float bitmapThreshold = 0.5f;
+    private String pivotKeyFormat;
+    private String pivotValueFormat;
+    private String groupValueFormat;
 }

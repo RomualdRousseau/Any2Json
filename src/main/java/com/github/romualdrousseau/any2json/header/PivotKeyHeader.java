@@ -6,7 +6,6 @@ import java.util.List;
 import com.github.romualdrousseau.any2json.base.BaseCell;
 import com.github.romualdrousseau.any2json.base.BaseHeader;
 import com.github.romualdrousseau.any2json.base.BaseTable;
-import com.github.romualdrousseau.any2json.config.Settings;
 
 public class PivotKeyHeader extends MetaHeader {
 
@@ -25,7 +24,7 @@ public class PivotKeyHeader extends MetaHeader {
 
     @Override
     public String getName() {
-        return super.getName() + " " + Settings.PIVOT_KEY_SUFFIX;
+        return String.format(this.getTable().getSheet().getPivotKeyFormat(), super.getName());
     }
 
     @Override

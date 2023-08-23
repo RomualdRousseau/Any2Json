@@ -3,7 +3,6 @@ package com.github.romualdrousseau.any2json.header;
 import com.github.romualdrousseau.any2json.base.BaseCell;
 import com.github.romualdrousseau.any2json.base.BaseHeader;
 import com.github.romualdrousseau.any2json.base.BaseTable;
-import com.github.romualdrousseau.any2json.config.Settings;
 
 public class MetaGroupHeader extends MetaTableHeader {
 
@@ -17,7 +16,7 @@ public class MetaGroupHeader extends MetaTableHeader {
 
     @Override
     public String getName() {
-        return super.getName() + " " + Settings.GROUP_VALUE_SUFFIX;
+        return String.format(this.getTable().getSheet().getGroupValueFormat(), super.getName());
     }
 
     @Override
