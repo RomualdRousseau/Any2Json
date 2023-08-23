@@ -1,13 +1,16 @@
 package com.github.romualdrousseau.any2json.header;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import com.github.romualdrousseau.any2json.HeaderTag;
 import com.github.romualdrousseau.any2json.base.BaseCell;
 import com.github.romualdrousseau.any2json.base.BaseHeader;
+import com.github.romualdrousseau.any2json.base.BaseRow;
 import com.github.romualdrousseau.any2json.base.BaseTable;
+import com.github.romualdrousseau.any2json.config.Settings;
 import com.github.romualdrousseau.shuju.strings.StringUtils;
+import com.github.romualdrousseau.shuju.types.Tensor;
 
 public class DataTableHeader extends BaseHeader {
 
@@ -18,6 +21,7 @@ public class DataTableHeader extends BaseHeader {
     public DataTableHeader(final BaseTable table, final BaseCell cell) {
         super(table, cell);
         this.name = this.getCell().getValue();
+        this.entities = this.sampleEntities();
     }
 
     @Override
@@ -37,7 +41,7 @@ public class DataTableHeader extends BaseHeader {
 
     @Override
     public List<String> entities() {
-        return Collections.emptyList();
+        return this.entities;
     }
 
     @Override
@@ -68,6 +72,29 @@ public class DataTableHeader extends BaseHeader {
         }
     }
 
+    private List<String> sampleEntities() {
+        final int N = Math.min(this.getTable().getNumberOfRows(), Settings.DEFAULT_SAMPLE_COUNT);
+        final Tensor entityVector = Tensor.zeros(this.getTable().getSheet().getDocument().getModel().getEntityList().size());
+        float n = 0.0f;
+        for (int i = 0; i < N; i++) {
+            final BaseRow row = this.getTable().getRowAt(i);
+            if (row == null) {
+                continue;
+            }
+            final BaseCell cell = row.getCellAt(this.getColumnIndex());
+            if (cell.hasValue() && cell.getSymbol().equals("e")) {
+                entityVector.iadd(cell.getEntityVector());
+                n += Settings.DEFAULT_ENTITY_PROBABILITY;
+            }
+        }
+        if (n > 0.0f) {
+            entityVector.if_lt_then(n, 0.0f, 1.0f);
+        }
+        final List<String> entityList = this.getTable().getSheet().getDocument().getModel().getEntityList();
+        return IntStream.range(0, entityVector.size).boxed().filter(i -> entityVector.data[i] == 1).map(i -> entityList.get(i)).toList();
+    }
+
     private String name;
     private HeaderTag tag;
+    private final List<String> entities;
 }

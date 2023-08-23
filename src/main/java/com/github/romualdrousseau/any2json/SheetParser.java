@@ -7,5 +7,5 @@ import com.github.romualdrousseau.any2json.base.BaseTable;
 
 public interface SheetParser {
 
-    List<BaseTable> findAllElements(final BaseSheet sheet);
+    List<BaseTable> findAllTables(final BaseSheet sheet);
 }

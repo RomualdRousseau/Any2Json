@@ -17,7 +17,7 @@ public class IntelliRow extends BaseRow {
         return (cell == null) ? BaseCell.Empty : cell;
     }
 
-    public void setCellValue(final int colIndex, final String value, final String rawValue) {
+    public void setCell(final int colIndex, final String value, final String rawValue) {
         if(value != null) {
             this.setCell(colIndex, new BaseCell(value, colIndex, 1, rawValue, this.getTable().getSheet()));
         }

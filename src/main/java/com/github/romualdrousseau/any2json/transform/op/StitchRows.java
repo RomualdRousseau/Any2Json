@@ -1,7 +1,7 @@
 package com.github.romualdrousseau.any2json.transform.op;
 
-import com.github.romualdrousseau.any2json.DocumentFactory;
 import com.github.romualdrousseau.any2json.base.BaseSheet;
+import com.github.romualdrousseau.any2json.config.Settings;
 import com.github.romualdrousseau.shuju.strings.StringFuzzy;
 
 public class StitchRows {
@@ -27,7 +27,7 @@ public class StitchRows {
         // Test if the previous and next rows can be "stiched"
         final String hashPrev = StitchRows.getRowPattern(sheet, rowIndex - 1);
         final String hashNext = StitchRows.getRowPattern(sheet, rowIndex + 1);
-        return StringFuzzy.Hamming(hashPrev, hashNext) >= DocumentFactory.DEFAULT_RATIO_SIMILARITY;
+        return StringFuzzy.Hamming(hashPrev, hashNext) >= Settings.DEFAULT_RATIO_SIMILARITY;
     }
 
     private static String getRowPattern(final BaseSheet sheet, final int rowIndex) {

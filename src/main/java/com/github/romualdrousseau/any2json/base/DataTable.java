@@ -3,12 +3,11 @@ package com.github.romualdrousseau.any2json.base;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import com.github.romualdrousseau.any2json.Document;
 import com.github.romualdrousseau.any2json.Header;
 import com.github.romualdrousseau.any2json.header.DataTableHeader;
-import com.github.romualdrousseau.any2json.header.IntelliHeader;
 import com.github.romualdrousseau.any2json.header.MetaTableHeader;
 import com.github.romualdrousseau.any2json.header.PivotKeyHeader;
+import com.github.romualdrousseau.any2json.intelli.IntelliHeader;
 
 public class DataTable extends BaseTable {
 
@@ -84,19 +83,20 @@ public class DataTable extends BaseTable {
         }
     }
 
-    public void prepareHeaders() {
-        this.setLoadCompleted(true); // Give chance to pivot header value to update their name
-        if (this.getSheet().getDocument().getHints().contains(Document.Hint.INTELLI_TAG)
-                || this.getSheet().getDocument().getHints().contains(Document.Hint.INTELLI_LAYOUT)) {
-            for (int i = 0; i < this.getNumberOfHeaders(); i++) {
-                this.setHeader(i, new IntelliHeader(this.getHeaderAt(i)));
-            }
-        } else {
-            for (int i = 0; i < this.getNumberOfHeaders(); i++) {
-                this.setHeader(i, new DataTableHeader(this.getHeaderAt(i)));
-            }
-        }
-    }
+    // public void prepareHeaders() {
+    //     this.setLoadCompleted(true);
+    //     if (this.getSheet().getDocument().getHints().contains(Document.Hint.INTELLI_TAG)
+    //             || this.getSheet().getDocument().getHints().contains(Document.Hint.INTELLI_LAYOUT)) {
+    //         for (int i = 0; i < this.getNumberOfHeaders(); i++) {
+    //             this.setHeader(i, new IntelliHeader(this.getHeaderAt(i)));
+    //         }
+    //     }
+    //     //  else {
+    //     //     for (int i = 0; i < this.getNumberOfHeaders(); i++) {
+    //     //         this.setHeader(i, new DataTableHeader(this.getHeaderAt(i)));
+    //     //     }
+    //     // }
+    // }
 
     private final HashMap<String, Header> headersByTag = new HashMap<>();
     private final LinkedList<RowGroup> rowGroups = new LinkedList<>();

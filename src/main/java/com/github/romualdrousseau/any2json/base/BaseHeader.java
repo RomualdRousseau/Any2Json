@@ -53,7 +53,7 @@ public abstract class BaseHeader implements Header {
         return this.cell;
     }
 
-    public boolean isRowGroupName() {
+    public boolean hasRowGroup() {
         return false;
     }
 

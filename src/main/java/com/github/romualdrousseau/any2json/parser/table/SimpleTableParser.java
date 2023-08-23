@@ -3,7 +3,6 @@ package com.github.romualdrousseau.any2json.parser.table;
 import java.util.Collections;
 import java.util.List;
 
-import com.github.romualdrousseau.any2json.Cell;
 import com.github.romualdrousseau.any2json.TableParser;
 import com.github.romualdrousseau.any2json.base.BaseCell;
 import com.github.romualdrousseau.any2json.base.BaseSheet;
@@ -11,7 +10,6 @@ import com.github.romualdrousseau.any2json.base.BaseTable;
 import com.github.romualdrousseau.any2json.base.DataTable;
 import com.github.romualdrousseau.any2json.base.MetaTable;
 import com.github.romualdrousseau.any2json.header.DataTableHeader;
-import com.github.romualdrousseau.any2json.header.PivotKeyHeader;
 
 public class SimpleTableParser implements TableParser {
 
@@ -40,19 +38,7 @@ public class SimpleTableParser implements TableParser {
     }
 
     private void parseDataTable(DataTable table) {
-        for (Cell cell : table.getRowAt(0).cells()) {
-            BaseCell baseCell = (BaseCell) cell;
-            if(baseCell.isPivotHeader()) {
-                PivotKeyHeader foundPivot = table.findFirstPivotHeader();
-                if (foundPivot == null) {
-                    table.addHeader(new PivotKeyHeader(table, baseCell));
-                } else {
-                    foundPivot.addEntry(baseCell);
-                }
-            } else {
-                table.addHeader(new DataTableHeader(table, baseCell));
-            }
-        }
+        table.getRowAt(0).cells().forEach(c -> table.addHeader(new DataTableHeader(table, (BaseCell) c)));
         table.setFirstRowOffset(1);
     }
 }

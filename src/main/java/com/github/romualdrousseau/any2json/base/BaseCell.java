@@ -30,7 +30,7 @@ public class BaseCell implements Cell, Symbol {
     public BaseCell(final String value, final int colIndex, final int mergedCount, final String rawValue, final BaseSheet sheet) {
         this.colIndex = colIndex;
         this.mergedCount = mergedCount;
-        this.rawValue = rawValue;
+        this.rawValue = (rawValue == null) ? "" : rawValue;
         this.sheet = sheet;
         this.setValue(value);
     }
@@ -80,7 +80,7 @@ public class BaseCell implements Cell, Symbol {
     }
 
     public String getRawValue() {
-        return (this.rawValue == null) ? "" : this.rawValue;
+        return this.rawValue;
     }
 
     public int getMergedCount() {

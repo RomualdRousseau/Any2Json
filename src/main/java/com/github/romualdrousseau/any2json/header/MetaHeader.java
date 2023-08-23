@@ -1,5 +1,6 @@
 package com.github.romualdrousseau.any2json.header;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.github.romualdrousseau.any2json.HeaderTag;
@@ -48,7 +49,7 @@ public class MetaHeader extends BaseHeader {
 
     @Override
     public List<String> entities() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

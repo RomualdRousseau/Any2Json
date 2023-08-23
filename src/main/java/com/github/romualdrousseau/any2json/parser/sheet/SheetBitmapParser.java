@@ -3,11 +3,11 @@ package com.github.romualdrousseau.any2json.parser.sheet;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.romualdrousseau.any2json.DocumentFactory;
 import com.github.romualdrousseau.any2json.SheetParser;
 import com.github.romualdrousseau.any2json.base.BaseRow;
 import com.github.romualdrousseau.any2json.base.BaseSheet;
 import com.github.romualdrousseau.any2json.base.BaseTable;
+import com.github.romualdrousseau.any2json.config.Settings;
 import com.github.romualdrousseau.any2json.event.BitmapGeneratedEvent;
 import com.github.romualdrousseau.shuju.cv.Filter;
 import com.github.romualdrousseau.shuju.cv.ISearchBitmap;
@@ -15,10 +15,10 @@ import com.github.romualdrousseau.shuju.cv.SearchPoint;
 import com.github.romualdrousseau.shuju.cv.Template;
 import com.github.romualdrousseau.shuju.cv.shapeextractor.RectangleExtractor;
 
-public class SemiStructuredSheetBitmapParser implements SheetParser {
+public class SheetBitmapParser implements SheetParser {
 
     @Override
-    public List<BaseTable> findAllElements(final BaseSheet sheet) {
+    public List<BaseTable> findAllTables(final BaseSheet sheet) {
         final SheetBitmap image = this.getSheetBitmap(sheet);
         if (!sheet.notifyStepCompleted(new BitmapGeneratedEvent(sheet, image))) {
             return null;
@@ -28,7 +28,7 @@ public class SemiStructuredSheetBitmapParser implements SheetParser {
 
     private SheetBitmap getSheetBitmap(final BaseSheet sheet) {
         return new SheetBitmap(sheet,
-                Math.min(sheet.getLastColumnNum(), DocumentFactory.DEFAULT_SAMPLE_COUNT),
+                Math.min(sheet.getLastColumnNum(), Settings.DEFAULT_SAMPLE_COUNT),
                 sheet.getLastRowNum());
     }
 

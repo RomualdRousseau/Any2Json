@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 import com.github.romualdrousseau.any2json.Document;
-import com.github.romualdrousseau.any2json.DocumentFactory;
 import com.github.romualdrousseau.any2json.Sheet;
 import com.github.romualdrousseau.any2json.SheetEvent;
 import com.github.romualdrousseau.any2json.SheetListener;
 import com.github.romualdrousseau.any2json.Table;
+import com.github.romualdrousseau.any2json.config.Settings;
 import com.github.romualdrousseau.any2json.event.AllTablesExtractedEvent;
 import com.github.romualdrousseau.any2json.event.DataTableListBuiltEvent;
 import com.github.romualdrousseau.any2json.event.MetaTableListBuiltEvent;
@@ -67,7 +67,7 @@ public class BaseSheet implements Sheet {
             return Optional.empty();
         }
 
-        final List<BaseTable> tables = this.getDocument().getSheetParser().findAllElements(this);
+        final List<BaseTable> tables = this.getDocument().getSheetParser().findAllTables(this);
         if (!this.notifyStepCompleted(new AllTablesExtractedEvent(this, tables))) {
             return Optional.empty();
         }
@@ -95,12 +95,10 @@ public class BaseSheet implements Sheet {
         } else {
             table = dataTables.get(0);
         }
-        table.prepareHeaders();
         table.updateHeaderTags();
-        table.setLoadCompleted(true);
         this.notifyStepCompleted(new TableReadyEvent(this, table));
 
-        return Optional.ofNullable(table);
+        return Optional.of(table);
     }
 
     public SheetStore getSheetStore() {
@@ -245,7 +243,7 @@ public class BaseSheet implements Sheet {
             return -1;
         }
         int result = this.sheetStore.getLastColumnNum(0);
-        for (int i = 1; i <= Math.min(DocumentFactory.DEFAULT_SAMPLE_COUNT, this.sheetStore.getLastRowNum()); i++) {
+        for (int i = 1; i <= Math.min(Settings.DEFAULT_SAMPLE_COUNT, this.sheetStore.getLastRowNum()); i++) {
             result = Math.max(result, this.sheetStore.getLastColumnNum(i));
         }
         return result;

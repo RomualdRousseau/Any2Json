@@ -10,8 +10,8 @@ import com.github.romualdrousseau.any2json.Sheet;
 import com.github.romualdrousseau.any2json.SheetParser;
 import com.github.romualdrousseau.any2json.classifier.SimpleTagClassifier;
 import com.github.romualdrousseau.any2json.config.DynamicPackages;
-import com.github.romualdrousseau.any2json.parser.sheet.SemiStructuredSheetBitmapParser;
-import com.github.romualdrousseau.any2json.parser.sheet.StructuredSheetParser;
+import com.github.romualdrousseau.any2json.parser.sheet.SheetBitmapParser;
+import com.github.romualdrousseau.any2json.parser.sheet.SimpleSheetParser;
 import com.github.romualdrousseau.any2json.parser.table.SimpleTableParser;
 import com.github.romualdrousseau.any2json.transform.op.StitchRows;
 
@@ -97,19 +97,21 @@ public abstract class BaseDocument implements Document {
     }
 
     public void updateParsersAndClassifiers() {
-        this.sheetParser = new StructuredSheetParser();
-        this.tableParser = new SimpleTableParser();
-        this.tagClassifier = new SimpleTagClassifier();
         if(this.hints.contains(Document.Hint.INTELLI_LAYOUT)) {
-            this.sheetParser = new SemiStructuredSheetBitmapParser();
+            this.sheetParser = new SheetBitmapParser();
             this.tableParser = DynamicPackages.GetElementParserFactory()
                 .map(x -> x.newInstance(this.model))
                 .orElseGet(SimpleTableParser::new);
+        }else {
+            this.sheetParser = new SimpleSheetParser();
+            this.tableParser = new SimpleTableParser();
         }
         if(this.hints.contains(Document.Hint.INTELLI_TAG)) {
             this.tagClassifier = DynamicPackages.GetTagClassifierFactory()
                 .map(x -> x.newInstance(this.model))
                 .orElseGet(SimpleTagClassifier::new);
+        } else {
+            this.tagClassifier = new SimpleTagClassifier();
         }
     }
 

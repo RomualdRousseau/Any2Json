@@ -27,7 +27,7 @@ public class MetaTableHeader extends MetaHeader {
     }
 
     @Override
-    public boolean isRowGroupName() {
+    public boolean hasRowGroup() {
         return this.rowGroup != null;
     }
 
