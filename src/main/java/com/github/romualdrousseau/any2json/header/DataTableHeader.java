@@ -1,5 +1,6 @@
 package com.github.romualdrousseau.any2json.header;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -21,7 +22,7 @@ public class DataTableHeader extends BaseHeader {
     public DataTableHeader(final BaseTable table, final BaseCell cell) {
         super(table, cell);
         this.name = this.getCell().getValue();
-        this.entities = this.sampleEntities();
+        this.entities = null;
     }
 
     @Override
@@ -41,6 +42,13 @@ public class DataTableHeader extends BaseHeader {
 
     @Override
     public List<String> entities() {
+        if (this.entities == null) {
+            if (this.getColumnIndex() < 0 || this.getColumnIndex() >= this.getTable().getNumberOfColumns()) {
+                this.entities =  Collections.emptyList();
+            } else {
+                this.entities = this.sampleEntities();
+            }
+        }
         return this.entities;
     }
 
@@ -96,5 +104,5 @@ public class DataTableHeader extends BaseHeader {
 
     private String name;
     private HeaderTag tag;
-    private final List<String> entities;
+    private List<String> entities;
 }
