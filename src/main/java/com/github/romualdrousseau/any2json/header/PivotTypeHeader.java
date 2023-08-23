@@ -1,8 +1,8 @@
 package com.github.romualdrousseau.any2json.header;
 
-public class PivotValueHeader extends PivotKeyHeader {
+public class PivotTypeHeader extends PivotKeyHeader {
 
-    public PivotValueHeader(final PivotKeyHeader parent, final String name) {
+    public PivotTypeHeader(final PivotKeyHeader parent, final String name) {
         super(parent.getTable(), parent.getCell());
         this.name = name;
     }
@@ -10,9 +10,9 @@ public class PivotValueHeader extends PivotKeyHeader {
     @Override
     public String getName() {
         if(!this.getTable().isLoadCompleted()) {
-            return this.getTable().getSheet().getPivotValueFormat();
+            return this.getTable().getSheet().getPivotTypeFormat();
         } else {
-            return String.format(this.getTable().getSheet().getPivotValueFormat(), this.name);
+            return String.format(this.getTable().getSheet().getPivotTypeFormat(), this.name);
         }
     }
 

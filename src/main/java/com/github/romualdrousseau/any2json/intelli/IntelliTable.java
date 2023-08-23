@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.romualdrousseau.any2json.Header;
+import com.github.romualdrousseau.any2json.PivotOption;
 import com.github.romualdrousseau.any2json.Row;
-import com.github.romualdrousseau.any2json.base.BaseCell;
 import com.github.romualdrousseau.any2json.base.BaseHeader;
 import com.github.romualdrousseau.any2json.base.BaseSheet;
 import com.github.romualdrousseau.any2json.base.BaseTableGraph;
 import com.github.romualdrousseau.any2json.base.DataTable;
 import com.github.romualdrousseau.any2json.base.BaseRow;
 import com.github.romualdrousseau.any2json.base.RowGroup;
+import com.github.romualdrousseau.any2json.header.PivotEntry;
 import com.github.romualdrousseau.any2json.header.PivotKeyHeader;
 import com.github.romualdrousseau.shuju.strings.StringUtils;
 
@@ -67,6 +68,13 @@ public class IntelliTable extends DataTable {
         this.tmpHeaders.add(newHeader);
 
         if (header instanceof PivotKeyHeader) {
+            if (this.getSheet().getPivotOption() == PivotOption.WITH_TYPE) {
+                newHeader = ((PivotKeyHeader) header).getPivotType();
+                newHeader.setTable(this);
+                newHeader.setColumnIndex(this.tmpHeaders.size());
+                this.tmpHeaders.add(newHeader);
+            }
+
             newHeader = ((PivotKeyHeader) header).getPivotValue();
             newHeader.setTable(this);
             newHeader.setColumnIndex(this.tmpHeaders.size());
@@ -110,26 +118,31 @@ public class IntelliTable extends DataTable {
             return newRows;
         }
 
-        for (final BaseCell pivotCell : pivot.getEntries()) {
-            if (!StringUtils.isFastBlank(orgRow.getCellAt(pivotCell.getColumnIndex()).getValue())) {
-                newRows.add(buildOneRow(graph, orgTable, orgRow, pivotCell, rowGroup));
+        for (final PivotEntry pivotEntry: pivot.getEntries()) {
+            if (!StringUtils.isFastBlank(orgRow.getCellAt(pivotEntry.getCell().getColumnIndex()).getValue())) {
+                newRows.add(buildOneRow(graph, orgTable, orgRow, pivotEntry, rowGroup));
             }
         }
         return newRows;
     }
 
     private IntelliRow buildOneRow(final BaseTableGraph graph, final DataTable orgTable, final BaseRow orgRow,
-            final BaseCell pivotCell,
-            final RowGroup rowGroup) {
+            final PivotEntry pivotEntry, final RowGroup rowGroup) {
         final IntelliRow newRow = new IntelliRow(this, this.tmpHeaders.size());
 
         for (final BaseHeader abstractHeader : this.tmpHeaders) {
             final List<Header> orgHeaders = orgTable.findHeader(abstractHeader);
 
-            if (abstractHeader instanceof PivotKeyHeader && pivotCell != null) {
+            if (abstractHeader instanceof PivotKeyHeader && pivotEntry != null) {
                 if (orgHeaders.size() > 0) {
-                    newRow.setCell(abstractHeader.getColumnIndex(), pivotCell.getValue(), pivotCell.getRawValue());
-                    newRow.setCell(abstractHeader.getColumnIndex() + 1, orgRow.getCellAt(pivotCell.getColumnIndex()));
+                    if (this.getSheet().getPivotOption() == PivotOption.WITH_TYPE) {
+                        newRow.setCell(abstractHeader.getColumnIndex(), pivotEntry.getValue(), pivotEntry.getValue());
+                        newRow.setCell(abstractHeader.getColumnIndex() + 1, pivotEntry.getTypeValue(), pivotEntry.getTypeValue());
+                        newRow.setCell(abstractHeader.getColumnIndex() + 2, orgRow.getCellAt(pivotEntry.getCell().getColumnIndex()));
+                    } else {
+                        newRow.setCell(abstractHeader.getColumnIndex(), pivotEntry.getCell());
+                        newRow.setCell(abstractHeader.getColumnIndex() + 1, orgRow.getCellAt(pivotEntry.getCell().getColumnIndex()));
+                    }
                 }
             } else {
                 if (orgHeaders.size() > 0) {

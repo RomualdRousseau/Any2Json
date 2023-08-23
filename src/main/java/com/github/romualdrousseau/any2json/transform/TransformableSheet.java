@@ -2,6 +2,7 @@ package com.github.romualdrousseau.any2json.transform;
 
 import org.python.util.PythonInterpreter;
 
+import com.github.romualdrousseau.any2json.PivotOption;
 import com.github.romualdrousseau.any2json.base.BaseDocument;
 import com.github.romualdrousseau.any2json.base.BaseSheet;
 import com.github.romualdrousseau.any2json.transform.op.DropColumn;
@@ -60,8 +61,16 @@ public class TransformableSheet {
         this.sheet.setBitmapThreshold(bitmapThreshold);
     }
 
+    public void setPivotOption(final String option) {
+        this.sheet.setPivotOption(Enum.valueOf(PivotOption.class, option));
+    }
+
     public void setPivotKeyFormat(final String format) {
         this.sheet.setPivotKeyFormat(format);
+    }
+
+    public void setPivotTypeFormat(final String format) {
+        this.sheet.setPivotTypeFormat(format);
     }
 
     public void setPivotValueFormat(final String format) {

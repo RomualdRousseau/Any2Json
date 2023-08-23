@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.github.romualdrousseau.any2json.Document;
+import com.github.romualdrousseau.any2json.PivotOption;
 import com.github.romualdrousseau.any2json.Sheet;
 import com.github.romualdrousseau.any2json.SheetEvent;
 import com.github.romualdrousseau.any2json.SheetListener;
@@ -30,8 +31,10 @@ public class BaseSheet implements Sheet {
         this.columnMask = CollectionUtils.mutableRange(0, this.storeLastColumnNum + 1);
         this.rowMask = CollectionUtils.mutableRange(0, this.sheetStore.getLastRowNum() + 1);
 
+        this.pivotOption = PivotOption.NONE;
         this.pivotKeyFormat = "%s " + Settings.PIVOT_KEY_SUFFIX;
         this.pivotValueFormat = "%s " + Settings.PIVOT_VALUE_SUFFIX;
+        this.pivotTypeFormat = "%s " + Settings.PIVOT_TYPE_SUFFIX;
         this.groupValueFormat = "%s " + Settings.GROUP_VALUE_SUFFIX;
     }
 
@@ -228,12 +231,28 @@ public class BaseSheet implements Sheet {
         this.bitmapThreshold = bitmapThreshold;
     }
 
+    public PivotOption getPivotOption() {
+        return this.pivotOption;
+    }
+
+    public void setPivotOption(final PivotOption option) {
+        this.pivotOption = option;
+    }
+
     public String getPivotKeyFormat() {
         return this.pivotKeyFormat;
     }
 
     public void setPivotKeyFormat(final String format) {
         this.pivotKeyFormat = format;
+    }
+
+    public String getPivotTypeFormat() {
+        return this.pivotTypeFormat;
+    }
+
+    public void setPivotTypeFormat(final String format) {
+        this.pivotTypeFormat = format;
     }
 
     public String getPivotValueFormat() {
@@ -287,7 +306,10 @@ public class BaseSheet implements Sheet {
 
     private boolean unmergedAll = false;
     private float bitmapThreshold = 0.5f;
+    private PivotOption pivotOption;
     private String pivotKeyFormat;
     private String pivotValueFormat;
+    private String pivotTypeFormat;
     private String groupValueFormat;
+
 }
