@@ -23,8 +23,7 @@ public class IntelliTable extends DataTable {
 
         // Collect headers
 
-        root.parse(
-                e -> e.getTable().headers().forEach(h -> this.addTmpHeader((BaseHeader) h)));
+        root.parse(e -> e.getTable().headers().forEach(h -> this.addTmpHeader((BaseHeader) h)));
 
         // Build tables
 
@@ -58,7 +57,7 @@ public class IntelliTable extends DataTable {
     }
 
     private void addTmpHeader(final BaseHeader header) {
-        if (this.checkIfHeaderAlreadyBuilt(header)) {
+        if (this.headerAlreadyAdded(header)) {
             return;
         }
 
@@ -92,13 +91,11 @@ public class IntelliTable extends DataTable {
         } else {
             for (final RowGroup rowGroup : orgTable.rowGroups()) {
                 for (int i = 0; i < rowGroup.getNumberOfRows(); i++) {
-                    if (rowGroup.getRow() + i >= orgTable.getNumberOfRows()) {
-                        break;
+                    if (rowGroup.getRow() + i < orgTable.getNumberOfRows()) {
+                        final BaseRow orgRow = (BaseRow) orgTable.getRowAt(rowGroup.getRow() + i);
+                        final List<IntelliRow> newRows = buildRowsForOneRow(graph, orgTable, orgRow, pivot, rowGroup);
+                        this.rows.addAll(newRows);
                     }
-                    final Row orgRow = orgTable.getRowAt(rowGroup.getRow() + i);
-                    final List<IntelliRow> newRows = buildRowsForOneRow(graph, orgTable, (BaseRow) orgRow, pivot,
-                            rowGroup);
-                    this.rows.addAll(newRows);
                 }
             }
         }
@@ -118,7 +115,7 @@ public class IntelliTable extends DataTable {
             return newRows;
         }
 
-        for (final PivotEntry pivotEntry: pivot.getEntries()) {
+        for (final PivotEntry pivotEntry : pivot.getEntries()) {
             if (!StringUtils.isFastBlank(orgRow.getCellAt(pivotEntry.getCell().getColumnIndex()).getValue())) {
                 newRows.add(buildOneRow(graph, orgTable, orgRow, pivotEntry, rowGroup));
             }
@@ -137,11 +134,14 @@ public class IntelliTable extends DataTable {
                 if (orgHeaders.size() > 0) {
                     if (this.getSheet().getPivotOption() == PivotOption.WITH_TYPE) {
                         newRow.setCell(abstractHeader.getColumnIndex(), pivotEntry.getValue(), pivotEntry.getValue());
-                        newRow.setCell(abstractHeader.getColumnIndex() + 1, pivotEntry.getTypeValue(), pivotEntry.getTypeValue());
-                        newRow.setCell(abstractHeader.getColumnIndex() + 2, orgRow.getCellAt(pivotEntry.getCell().getColumnIndex()));
+                        newRow.setCell(abstractHeader.getColumnIndex() + 1, pivotEntry.getTypeValue(),
+                                pivotEntry.getTypeValue());
+                        newRow.setCell(abstractHeader.getColumnIndex() + 2,
+                                orgRow.getCellAt(pivotEntry.getCell().getColumnIndex()));
                     } else {
                         newRow.setCell(abstractHeader.getColumnIndex(), pivotEntry.getCell());
-                        newRow.setCell(abstractHeader.getColumnIndex() + 1, orgRow.getCellAt(pivotEntry.getCell().getColumnIndex()));
+                        newRow.setCell(abstractHeader.getColumnIndex() + 1,
+                                orgRow.getCellAt(pivotEntry.getCell().getColumnIndex()));
                     }
                 }
             } else {
@@ -175,7 +175,7 @@ public class IntelliTable extends DataTable {
         return result;
     }
 
-    private boolean checkIfHeaderAlreadyBuilt(final Header header) {
+    private boolean headerAlreadyAdded(final Header header) {
         return this.tmpHeaders.contains(header);
     }
 
