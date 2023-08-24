@@ -2,7 +2,7 @@ package com.github.romualdrousseau.any2json.transform.op;
 
 import com.github.romualdrousseau.any2json.base.BaseSheet;
 
-public class MergeCell {
+public class RepeatCell {
 
     public static void Apply(final BaseSheet sheet, final int colIndex) {
         int lastRow = -1;

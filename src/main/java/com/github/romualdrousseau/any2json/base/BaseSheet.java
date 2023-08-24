@@ -69,7 +69,7 @@ public class BaseSheet implements Sheet {
             return Optional.empty();
         }
 
-        TransformableSheet.of(this).transformSheet();
+        TransformableSheet.of(this).applyAll();
         if (!this.notifyStepCompleted(new SheetPreparedEvent(this))) {
             return Optional.empty();
         }
