@@ -125,9 +125,9 @@ public abstract class BaseDocument implements Document {
         if (this.hints.contains(Document.Hint.INTELLI_TAG)) {
             this.tagClassifier = DynamicPackages.GetTagClassifierFactory()
                     .map(x -> x.newInstance(this.model))
-                    .orElseGet(SimpleTagClassifier::new);
+                    .orElseGet(() -> new SimpleTagClassifier(this.model));
         } else {
-            this.tagClassifier = new SimpleTagClassifier();
+            this.tagClassifier = new SimpleTagClassifier(this.model);
         }
     }
 

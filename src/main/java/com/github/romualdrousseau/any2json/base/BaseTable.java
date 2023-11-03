@@ -1,5 +1,6 @@
 package com.github.romualdrousseau.any2json.base;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,6 +43,10 @@ public class BaseTable implements Table, Visitable {
         this.lastRowOffset = 0;
         this.headerRowOffset = 0;
         this.loadCompleted = false;
+    }
+
+    @Override
+    public void close() throws IOException {
     }
 
     @Override

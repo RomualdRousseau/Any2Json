@@ -83,21 +83,6 @@ public class DataTable extends BaseTable {
         }
     }
 
-    // public void prepareHeaders() {
-    //     this.setLoadCompleted(true);
-    //     if (this.getSheet().getDocument().getHints().contains(Document.Hint.INTELLI_TAG)
-    //             || this.getSheet().getDocument().getHints().contains(Document.Hint.INTELLI_LAYOUT)) {
-    //         for (int i = 0; i < this.getNumberOfHeaders(); i++) {
-    //             this.setHeader(i, new IntelliHeader(this.getHeaderAt(i)));
-    //         }
-    //     }
-    //     //  else {
-    //     //     for (int i = 0; i < this.getNumberOfHeaders(); i++) {
-    //     //         this.setHeader(i, new DataTableHeader(this.getHeaderAt(i)));
-    //     //     }
-    //     // }
-    // }
-
     private final HashMap<String, Header> headersByTag = new HashMap<>();
     private final LinkedList<RowGroup> rowGroups = new LinkedList<>();
 }

@@ -36,6 +36,7 @@
         <slf4j.version>2.0.9</slf4j.version>
         <shuju.version>1.22-SNAPSHOT</shuju.version>
         <jython.version>2.7.3</jython.version>
+        <jackson.version>2.15.2</jackson.version>
 
         <junit.version>4.13.2</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
@@ -80,6 +81,26 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -139,6 +160,7 @@
                 <configuration>
                     <argLine>-Dfile.encoding="UTF-8"</argLine>
                     <argLine>--add-opens=java.base/java.nio=ALL-UNNAMED</argLine>
+                    <argLine>-Darrow.memory.debug.allocator=true</argLine>
                     <reportFormat>plain</reportFormat>
                     <consoleOutputReporter>
                     <disable>true</disable>

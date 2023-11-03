@@ -1,6 +1,8 @@
 package com.github.romualdrousseau.any2json.intelli;
 
 import java.util.List;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 
 import com.github.romualdrousseau.any2json.Header;
@@ -13,6 +15,9 @@ import com.github.romualdrousseau.any2json.base.BaseRow;
 import com.github.romualdrousseau.any2json.base.RowGroup;
 import com.github.romualdrousseau.any2json.header.PivotEntry;
 import com.github.romualdrousseau.any2json.header.PivotKeyHeader;
+import com.github.romualdrousseau.shuju.bigdata.DataFrame;
+import com.github.romualdrousseau.shuju.bigdata.DataFrameWriter;
+import com.github.romualdrousseau.shuju.bigdata.Row;
 
 public class IntelliTable extends DataTable {
 
@@ -25,15 +30,27 @@ public class IntelliTable extends DataTable {
 
         // Build tables
 
-        final PivotKeyHeader pivot = this.findPivotHeader();
-        root.parseIf(
-                e -> this.buildRowsForOneTable(e, (DataTable) e.getTable(), pivot),
-                e -> e.getTable() instanceof DataTable);
-        this.setLoadCompleted(true);
+        try {
+            this.writer = new DataFrameWriter(10000, this.tmpHeaders.size());
+            final PivotKeyHeader pivot = this.findPivotHeader();
+            root.parseIf(
+                    e -> this.buildRowsForOneTable(e, (DataTable) e.getTable(), pivot),
+                    e -> e.getTable() instanceof DataTable);
+            this.setLoadCompleted(true);
+            this.rows = this.writer.getDataFrame();
+        } catch (IOException x) {
+            throw new UncheckedIOException(x);
+        }
 
         // Finalize headers
 
         this.tmpHeaders.forEach(h -> this.addHeader(new IntelliHeader(h)));
+    }
+
+    @Override
+    public void close() throws IOException {
+        this.rows.close();
+        this.writer.close();
     }
 
     @Override
@@ -43,7 +60,7 @@ public class IntelliTable extends DataTable {
 
     @Override
     public int getNumberOfRows() {
-        return this.rows.size();
+        return this.rows.getRowCount();
     }
 
     @Override
@@ -51,28 +68,31 @@ public class IntelliTable extends DataTable {
         if (rowIndex < 0 || rowIndex >= getNumberOfRows()) {
             throw new ArrayIndexOutOfBoundsException(rowIndex);
         }
-        return this.rows.get(rowIndex);
+        return new IntelliRow(this, rowIndex, this.rows.getRow(rowIndex));
     }
 
     private void addTmpHeader(final BaseHeader header) {
-        if (this.headerAlreadyAdded(header)) {
+        if (this.tmpHeaders.contains(header)) {
             return;
         }
-
-        this.pushHeader(header.clone());
 
         if (header instanceof PivotKeyHeader) {
             final var pivot = (PivotKeyHeader) header;
             if (this.getSheet().getPivotOption() == PivotOption.WITH_TYPE_AND_VALUE) {
+                this.addHeaderIntoTmpHeaders(pivot.clone(), false);
                 for (final String typeValue : pivot.getEntryTypes()) {
-                    this.pushHeader(pivot.getPivotType().clone().setName(typeValue));
+                    this.addHeaderIntoTmpHeaders(pivot.getPivotType().clone().setName(typeValue), false);
                 }
             } else if (this.getSheet().getPivotOption() == PivotOption.WITH_TYPE) {
-                this.pushHeader(pivot.getPivotType());
-                this.pushHeader(pivot.getPivotValue());
+                this.addHeaderIntoTmpHeaders(pivot.clone(), false);
+                this.addHeaderIntoTmpHeaders(pivot.getPivotType().clone(), false);
+                this.addHeaderIntoTmpHeaders(pivot.getPivotValue().clone(), false);
             } else {
-                this.pushHeader(pivot.getPivotValue());
+                this.addHeaderIntoTmpHeaders(pivot.clone(), false);
+                this.addHeaderIntoTmpHeaders(pivot.getPivotValue().clone(), false);
             }
+        } else {
+            this.addHeaderIntoTmpHeaders(header.clone(), true);
         }
     }
 
@@ -81,7 +101,7 @@ public class IntelliTable extends DataTable {
         if (orgTable.getNumberOfRowGroups() == 0) {
             for (final var orgRow : orgTable.rows()) {
                 final var newRows = buildRowsForOneRow(graph, orgTable, (BaseRow) orgRow, pivot, null);
-                this.rows.addAll(newRows);
+                this.addRows(newRows);
             }
         } else {
             for (final RowGroup rowGroup : orgTable.rowGroups()) {
@@ -89,17 +109,17 @@ public class IntelliTable extends DataTable {
                     if (rowGroup.getRow() + i < orgTable.getNumberOfRows()) {
                         final var orgRow = orgTable.getRowAt(rowGroup.getRow() + i);
                         final var newRows = buildRowsForOneRow(graph, orgTable, orgRow, pivot, rowGroup);
-                        this.rows.addAll(newRows);
+                        this.addRows(newRows);
                     }
                 }
             }
         }
     }
 
-    private List<IntelliRow> buildRowsForOneRow(final BaseTableGraph graph, final DataTable orgTable,
+    private List<Row> buildRowsForOneRow(final BaseTableGraph graph, final DataTable orgTable,
             final BaseRow orgRow,
             final PivotKeyHeader pivot, final RowGroup rowGroup) {
-        final var newRows = new ArrayList<IntelliRow>();
+        final var newRows = new ArrayList<Row>();
         if (orgRow.isIgnored()) {
             return newRows;
         }
@@ -126,9 +146,9 @@ public class IntelliTable extends DataTable {
         return newRows;
     }
 
-    private IntelliRow buildOneRowWithoutPivot(final BaseTableGraph graph, final DataTable orgTable,
+    private Row buildOneRowWithoutPivot(final BaseTableGraph graph, final DataTable orgTable,
             final BaseRow orgRow, final RowGroup rowGroup) {
-        final var newRow = new IntelliRow(this, this.tmpHeaders.size());
+        final var newRow = new Row(this.tmpHeaders.size());
         for (final var abstractHeader : this.tmpHeaders) {
             final var orgHeaders = orgTable.findHeader(abstractHeader);
             this.generateCellsNoPivot(graph, orgHeaders, abstractHeader, rowGroup, orgRow, newRow);
@@ -136,16 +156,16 @@ public class IntelliTable extends DataTable {
         return newRow;
     }
 
-    private IntelliRow buildOneRowWithPivot(final BaseTableGraph graph, final DataTable orgTable,
+    private Row buildOneRowWithPivot(final BaseTableGraph graph, final DataTable orgTable,
             final BaseRow orgRow, final PivotEntry pivotEntry, final RowGroup rowGroup) {
-        final var newRow = new IntelliRow(this, this.tmpHeaders.size());
+        final var newRow = new Row(this.tmpHeaders.size());
         for (final var abstractHeader : this.tmpHeaders) {
             final var orgHeaders = orgTable.findHeader(abstractHeader);
             if (abstractHeader instanceof PivotKeyHeader) {
                 if (orgHeaders.size() > 0) {
-                    newRow.setCell(abstractHeader.getColumnIndex() + 0, pivotEntry.getCell());
-                    newRow.setCell(abstractHeader.getColumnIndex() + 1,
-                            orgRow.getCellAt(pivotEntry.getCell().getColumnIndex()));
+                    newRow.set(abstractHeader.getColumnIndex() + 0, pivotEntry.getCell().getValue());
+                    newRow.set(abstractHeader.getColumnIndex() + 1,
+                            orgRow.getCellAt(pivotEntry.getCell().getColumnIndex()).getValue());
                 }
             } else {
                 this.generateCellsNoPivot(graph, orgHeaders, abstractHeader, rowGroup, orgRow, newRow);
@@ -154,17 +174,17 @@ public class IntelliTable extends DataTable {
         return newRow;
     }
 
-    private IntelliRow buildOneRowWithPivotAndType(final BaseTableGraph graph, final DataTable orgTable,
+    private Row buildOneRowWithPivotAndType(final BaseTableGraph graph, final DataTable orgTable,
             final BaseRow orgRow, final PivotEntry pivotEntry, final RowGroup rowGroup) {
-        final var newRow = new IntelliRow(this, this.tmpHeaders.size());
+        final var newRow = new Row(this.tmpHeaders.size());
         for (final var abstractHeader : this.tmpHeaders) {
             final var orgHeaders = orgTable.findHeader(abstractHeader);
             if (abstractHeader instanceof PivotKeyHeader) {
                 if (orgHeaders.size() > 0) {
                     final var ci = abstractHeader.getColumnIndex();
-                    newRow.setCell(ci + 0, pivotEntry.getValue(), pivotEntry.getValue());
-                    newRow.setCell(ci + 1, pivotEntry.getTypeValue(), pivotEntry.getTypeValue());
-                    newRow.setCell(ci + 2, orgRow.getCellAt(pivotEntry.getCell().getColumnIndex()));
+                    newRow.set(ci + 0, pivotEntry.getValue());
+                    newRow.set(ci + 1, pivotEntry.getTypeValue());
+                    newRow.set(ci + 2, orgRow.getCellAt(pivotEntry.getCell().getColumnIndex()).getValue());
                 }
             } else {
                 this.generateCellsNoPivot(graph, orgHeaders, abstractHeader, rowGroup, orgRow, newRow);
@@ -173,21 +193,22 @@ public class IntelliTable extends DataTable {
         return newRow;
     }
 
-    private IntelliRow buildOneRowWithPivotTypeAndValue(final BaseTableGraph graph, final DataTable orgTable,
+    private Row buildOneRowWithPivotTypeAndValue(final BaseTableGraph graph, final DataTable orgTable,
             final BaseRow orgRow, final PivotKeyHeader pivot, final String value, final RowGroup rowGroup) {
-        final var newRow = new IntelliRow(this, this.tmpHeaders.size());
+        final var newRow = new Row(this.tmpHeaders.size());
         for (final var abstractHeader : this.tmpHeaders) {
             final var orgHeaders = orgTable.findHeader(abstractHeader);
             if (abstractHeader instanceof PivotKeyHeader) {
                 if (orgHeaders.size() > 0) {
-                    newRow.setCell(abstractHeader.getColumnIndex(), value, value);
+                    newRow.set(abstractHeader.getColumnIndex(), value);
                     int i = 1;
                     for (final var typeValue : pivot.getEntryTypes()) {
                         final var ci = abstractHeader.getColumnIndex() + i;
                         pivot.getEntries().stream()
                                 .filter(x -> x.getValue().equals(value) && x.getTypeValue().equals(typeValue))
                                 .findFirst()
-                                .ifPresent(x -> newRow.setCell(ci, orgRow.getCellAt(x.getCell().getColumnIndex())));
+                                .ifPresent(
+                                        x -> newRow.set(ci, orgRow.getCellAt(x.getCell().getColumnIndex()).getValue()));
                         i++;
                     }
                 }
@@ -199,43 +220,55 @@ public class IntelliTable extends DataTable {
     }
 
     private void generateCellsNoPivot(final BaseTableGraph graph, final List<Header> orgHeaders,
-            final BaseHeader abstractHeader, final RowGroup rowGroup, final BaseRow orgRow, final IntelliRow newRow) {
+            final BaseHeader abstractHeader, final RowGroup rowGroup, final BaseRow orgRow, final Row newRow) {
         if (orgHeaders.size() > 0) {
             for (final var orgHeader : orgHeaders) {
                 final var orgAbstractHeader = (BaseHeader) orgHeader;
                 if (rowGroup == null || !orgAbstractHeader.hasRowGroup()) {
-                    newRow.setCell(abstractHeader.getColumnIndex(), orgAbstractHeader.getCellAtRow(orgRow));
+                    final var value = orgAbstractHeader.getCellAtRow(orgRow).getValue();
+                    abstractHeader.setColumnEmpty(abstractHeader.isColumnEmpty() & value.isBlank());
+                    newRow.set(abstractHeader.getColumnIndex(), value);
                 } else {
-                    newRow.setCell(abstractHeader.getColumnIndex(), rowGroup.getCell());
+                    final var value = rowGroup.getCell().getValue();
+                    abstractHeader.setColumnEmpty(abstractHeader.isColumnEmpty() & value.isBlank());
+                    newRow.set(abstractHeader.getColumnIndex(), rowGroup.getCell().getValue());
                 }
             }
         } else {
             final var header = graph.getParent().findClosestHeader(abstractHeader);
-            newRow.setCell(abstractHeader.getColumnIndex(), header.getValue(), header.getCell().getRawValue());
+            final var value = header.getValue();
+            abstractHeader.setColumnEmpty(abstractHeader.isColumnEmpty() & value.isBlank());
+            newRow.set(abstractHeader.getColumnIndex(), value);
         }
     }
 
     private PivotKeyHeader findPivotHeader() {
-        PivotKeyHeader result = null;
         for (final var header : this.tmpHeaders) {
             if (header instanceof PivotKeyHeader) {
-                result = (PivotKeyHeader) header;
-                break;
+                return (PivotKeyHeader) header;
             }
         }
-        return result;
+        return null;
     }
 
-    private boolean headerAlreadyAdded(final BaseHeader header) {
-        return this.tmpHeaders.contains(header);
-    }
-
-    private void pushHeader(final BaseHeader newHeader) {
+    private void addHeaderIntoTmpHeaders(final BaseHeader newHeader, final boolean columnEmpty) {
         newHeader.setTable(this);
         newHeader.setColumnIndex(this.tmpHeaders.size());
+        newHeader.setColumnEmpty(columnEmpty);
         this.tmpHeaders.add(newHeader);
     }
 
+    private void addRows(final List<Row> newRows) {
+        newRows.forEach(row -> {
+            try {
+                this.writer.write(row);
+            } catch (IOException x) {
+                throw new UncheckedIOException(x);
+            }
+        });
+    }
+
     private final ArrayList<BaseHeader> tmpHeaders = new ArrayList<>();
-    private final ArrayList<IntelliRow> rows = new ArrayList<>();
+    private final DataFrameWriter writer;
+    private final DataFrame rows;
 }

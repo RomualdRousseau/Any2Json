@@ -22,6 +22,7 @@ public class IntelliHeader extends DataTableHeader {
         }
 
         this.setColumnIndex(header.getColumnIndex());
+        this.setColumnEmpty(header.isColumnEmpty());
     }
 
     @Override

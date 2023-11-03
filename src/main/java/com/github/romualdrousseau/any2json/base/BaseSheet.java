@@ -305,7 +305,7 @@ public class BaseSheet implements Sheet {
     private final int storeLastColumnNum;
 
     private boolean unmergedAll = false;
-    private float bitmapThreshold = 0.5f;
+    private float bitmapThreshold = Settings.DEFAUTL_BITMAP_THRESHOLD;
     private PivotOption pivotOption;
     private String pivotKeyFormat;
     private String pivotValueFormat;

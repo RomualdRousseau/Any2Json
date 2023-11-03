@@ -15,4 +15,6 @@ public interface Header {
     Iterable<String> entities();
 
     String getEntitiesAsString();
+
+    boolean isColumnEmpty();
 }

@@ -11,6 +11,7 @@ public abstract class BaseHeader implements Header {
         this.table = table;
         this.cell = cell;
         this.colIndex = cell.getColumnIndex();
+        this.columnEmpty = false;
     }
 
     @Override
@@ -31,6 +32,15 @@ public abstract class BaseHeader implements Header {
     @Override
     public Iterable<String> entities() {
         return this.getCell().entities();
+    }
+
+    @Override
+    public boolean isColumnEmpty() {
+        return this.columnEmpty;
+    }
+
+    public void setColumnEmpty(boolean columnEmpty) {
+        this.columnEmpty = columnEmpty;
     }
 
     public int getColumnIndex() {
@@ -81,4 +91,5 @@ public abstract class BaseHeader implements Header {
     private BaseTable table;
     private final BaseCell cell;
     private int colIndex;
+    private boolean columnEmpty;
 }

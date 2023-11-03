@@ -1,6 +1,8 @@
 package com.github.romualdrousseau.any2json;
 
-public interface Table {
+import java.io.Closeable;
+
+public interface Table extends Closeable {
 
     Sheet getSheet();
 

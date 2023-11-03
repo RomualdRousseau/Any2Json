@@ -87,18 +87,18 @@ public class BaseRow implements Row {
         }
     }
 
-    private int getNumberOfMergedCellsAt(final int colIndex) {
-        assert (colIndex >= 0 && colIndex < this.table.getNumberOfColumns()) : "column index out of bound";
-        final int col = this.table.getFirstColumn() + colIndex;
-        final int row = this.table.getFirstRow() + this.rowIndex;
-        return this.table.getSheet().getNumberOfMergedCellsAt(col, row);
-    }
-
-    private String getCellValueAt(final int colIndex) {
+    protected String getCellValueAt(final int colIndex) {
         assert (colIndex >= 0 && colIndex < this.table.getNumberOfColumns()) : "column index out of bound";
         final int col = this.table.getFirstColumn() + colIndex;
         final int row = this.table.getFirstRow() + this.rowIndex;
         return this.table.getSheet().getCellDataAt(col, row);
+    }
+
+    protected int getNumberOfMergedCellsAt(final int colIndex) {
+        assert (colIndex >= 0 && colIndex < this.table.getNumberOfColumns()) : "column index out of bound";
+        final int col = this.table.getFirstColumn() + colIndex;
+        final int row = this.table.getFirstRow() + this.rowIndex;
+        return this.table.getSheet().getNumberOfMergedCellsAt(col, row);
     }
 
     private void updateCellCount() {
