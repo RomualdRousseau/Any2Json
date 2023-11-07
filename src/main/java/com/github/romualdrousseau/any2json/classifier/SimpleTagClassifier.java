@@ -21,6 +21,7 @@ public class SimpleTagClassifier implements TagClassifier {
 
         this.tagTokenizer = new ShingleTokenizer(vocabulary);
         this.snakeMode = false;
+        this.camelMode = false;
     }
 
     @Override
@@ -39,8 +40,20 @@ public class SimpleTagClassifier implements TagClassifier {
     }
 
     @Override
+    public SimpleTagClassifier setCamelMode(final boolean camelMode) {
+        this.camelMode = camelMode;
+        return this;
+    }
+
+    @Override
     public String ensureTagStyle(final String text) {
-        if (this.snakeMode || text.indexOf(" ") > 0) {
+        if (this.snakeMode) {
+            return StringUtils.toSnake(text, this.tagTokenizer);
+        }
+        if (this.camelMode) {
+            return StringUtils.toCamel(text, this.tagTokenizer);
+        }
+        if (text.indexOf(" ") > 0) {
             return StringUtils.toSnake(text, this.tagTokenizer);
         } else {
             return StringUtils.toCamel(text, this.tagTokenizer);
@@ -49,4 +62,5 @@ public class SimpleTagClassifier implements TagClassifier {
 
     private final Text.ITokenizer tagTokenizer;
     private boolean snakeMode;
+    private boolean camelMode;
 }

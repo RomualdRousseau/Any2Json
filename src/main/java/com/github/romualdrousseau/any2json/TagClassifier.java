@@ -8,5 +8,7 @@ public interface TagClassifier extends AutoCloseable {
 
     TagClassifier setSnakeMode(final boolean snake);
 
+    TagClassifier setCamelMode(final boolean snake);
+
     String ensureTagStyle(final String text);
 }
