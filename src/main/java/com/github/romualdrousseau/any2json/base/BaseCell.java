@@ -101,7 +101,7 @@ public class BaseCell implements Cell, Symbol {
 
     public Optional<String> getPivotEntityAsString() {
         if (this.sheet != null) {
-            return this.entityList.stream().filter(x -> this.sheet.getDocument().getModel().getPivotEntityList().contains(x)).findFirst();
+            return this.entityList.stream().filter(x -> this.sheet.getPivotEntityList().contains(x)).findFirst();
         } else {
             return Optional.empty();
         }

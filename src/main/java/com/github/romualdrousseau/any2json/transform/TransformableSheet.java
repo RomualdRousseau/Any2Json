@@ -1,5 +1,7 @@
 package com.github.romualdrousseau.any2json.transform;
 
+import java.util.List;
+
 import org.python.util.PythonInterpreter;
 
 import com.github.romualdrousseau.any2json.PivotOption;
@@ -139,9 +141,18 @@ public class TransformableSheet {
     }
 
     /**
+     * This method sets the pivot entities for the sheet using the given list of entities.
+     *
+     * @param pivotEntityList the list of entities as a list of string
+     */
+    public void setPivotEntityList(final List<String> pivotEntityList) {
+        this.sheet.setPivotEntityList(pivotEntityList);
+    }
+
+    /**
      * This method sets the pivot option for the sheet using the given option string.
      *
-     * @param option the option string: "NONE", "WITH_TYPE"
+     * @param option the option string: "NONE", "WITH_TYPE", "WITH_TYPE_AND_VALUE"
      */
     public void setPivotOption(final String option) {
         this.sheet.setPivotOption(Enum.valueOf(PivotOption.class, option));

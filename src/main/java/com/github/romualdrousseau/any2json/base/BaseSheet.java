@@ -219,6 +219,18 @@ public class BaseSheet implements Sheet {
         this.bitmapThreshold = bitmapThreshold;
     }
 
+    public List<String> getPivotEntityList() {
+        if (this.pivotEntityList == null) {
+            return this.getDocument().getModel().getPivotEntityList();
+        } else {
+            return this.pivotEntityList;
+        }
+    }
+
+    public void setPivotEntityList(final List<String> pivotEntityList) {
+        this.pivotEntityList = pivotEntityList;
+    }
+
     public PivotOption getPivotOption() {
         return this.pivotOption;
     }
@@ -299,5 +311,6 @@ public class BaseSheet implements Sheet {
     private String pivotValueFormat;
     private String pivotTypeFormat;
     private String groupValueFormat;
+    private  List<String> pivotEntityList;
 
 }
