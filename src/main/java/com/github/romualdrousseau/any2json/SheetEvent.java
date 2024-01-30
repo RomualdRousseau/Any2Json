@@ -2,7 +2,7 @@ package com.github.romualdrousseau.any2json;
 
 public abstract class SheetEvent {
 
-    public SheetEvent(Sheet source) {
+    public SheetEvent(final Sheet source) {
         this.source = source;
         this.canceled = false;
     }
@@ -15,7 +15,7 @@ public abstract class SheetEvent {
         return this.canceled;
     }
 
-    public void setCancel(boolean flag) {
+    public void setCancel(final boolean flag) {
         this.canceled = flag;
     }
 

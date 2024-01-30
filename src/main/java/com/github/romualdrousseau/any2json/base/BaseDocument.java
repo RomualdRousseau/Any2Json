@@ -6,6 +6,7 @@ import com.github.romualdrousseau.any2json.Document;
 import com.github.romualdrousseau.any2json.TableParser;
 import com.github.romualdrousseau.any2json.TagClassifier;
 import com.github.romualdrousseau.any2json.Model;
+import com.github.romualdrousseau.any2json.ReadingDirection;
 import com.github.romualdrousseau.any2json.Sheet;
 import com.github.romualdrousseau.any2json.SheetParser;
 import com.github.romualdrousseau.any2json.classifier.SimpleTagClassifier;
@@ -13,12 +14,15 @@ import com.github.romualdrousseau.any2json.config.DynamicPackages;
 import com.github.romualdrousseau.any2json.parser.sheet.SheetBitmapParser;
 import com.github.romualdrousseau.any2json.parser.sheet.SimpleSheetParser;
 import com.github.romualdrousseau.any2json.parser.table.SimpleTableParser;
+import com.github.romualdrousseau.any2json.readdir.GutenbergDiagonal;
 import com.github.romualdrousseau.any2json.transform.op.StitchRows;
 
 public abstract class BaseDocument implements Document {
 
     public BaseDocument() {
         this.updateParsersAndClassifiers();
+        // GutenbergDiagonal (or LRTB) is the default reading direction.
+        this.readingDirection = new GutenbergDiagonal();
     }
 
     @Override
@@ -32,7 +36,7 @@ public abstract class BaseDocument implements Document {
                 this.tagClassifier.close();
                 this.tagClassifier = null;
             }
-        } catch (Exception x) {
+        } catch (final Exception x) {
             throw new RuntimeException(x);
         }
     }
@@ -58,7 +62,7 @@ public abstract class BaseDocument implements Document {
     }
 
     @Override
-    public Document setModel(Model model) {
+    public Document setModel(final Model model) {
         this.model = model;
         return this;
     }
@@ -69,7 +73,7 @@ public abstract class BaseDocument implements Document {
     }
 
     @Override
-    public Document setHints(EnumSet<Hint> hints) {
+    public Document setHints(final EnumSet<Hint> hints) {
         this.hints = hints;
         this.updateParsersAndClassifiers();
         return this;
@@ -81,8 +85,19 @@ public abstract class BaseDocument implements Document {
     }
 
     @Override
-    public Document setRecipe(String recipe) {
+    public Document setRecipe(final String recipe) {
         this.recipe = recipe;
+        return this;
+    }
+
+    @Override
+    public ReadingDirection getReadingDirection() {
+        return this.readingDirection;
+    }
+
+    @Override
+    public BaseDocument setReadingDirection(final ReadingDirection readingDirection) {
+        this.readingDirection = readingDirection;
         return this;
     }
 
@@ -91,22 +106,22 @@ public abstract class BaseDocument implements Document {
         return new SheetIterable(this);
     }
 
-    public BaseDocument setSheetParser(SheetParser sheetParser) {
+    public BaseDocument setSheetParser(final SheetParser sheetParser) {
         this.sheetParser = sheetParser;
         return this;
     }
 
-    public BaseDocument setTableParser(TableParser tableParser) {
+    public BaseDocument setTableParser(final TableParser tableParser) {
         this.tableParser = tableParser;
         return this;
     }
 
-    public BaseDocument setTagClassifier(TagClassifier tagClassifier) {
+    public BaseDocument setTagClassifier(final TagClassifier tagClassifier) {
         this.tagClassifier = tagClassifier;
         return this;
     }
 
-    public void autoRecipe(BaseSheet sheet) {
+    public void autoRecipe(final BaseSheet sheet) {
         if (this.hints.contains(Document.Hint.INTELLI_LAYOUT)) {
             StitchRows.Apply(sheet);
         }
@@ -137,4 +152,5 @@ public abstract class BaseDocument implements Document {
     private SheetParser sheetParser;
     private TableParser tableParser;
     private TagClassifier tagClassifier;
+    private ReadingDirection readingDirection;
 }

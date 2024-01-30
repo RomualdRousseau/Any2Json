@@ -8,7 +8,7 @@ public interface Row {
 
     int getNumberOfCells();
 
-    Cell getCellAt(int colIndex);
+    Cell getCellAt(final int colIndex);
 
     Iterable<Cell> cells();
 }

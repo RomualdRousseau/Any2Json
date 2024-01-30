@@ -16,27 +16,31 @@ public interface Document extends AutoCloseable {
 
     TagClassifier getTagClassifier();
 
-    boolean open(File file, String encoding, final String password);
+    boolean open(final File file, final String encoding, final String password);
 
     void close();
 
     Model getModel();
 
-    Document setModel(Model model);
+    Document setModel(final Model model);
 
     EnumSet<Hint> getHints();
 
-    Document setHints(EnumSet<Hint> hints);
+    Document setHints(final EnumSet<Hint> hints);
 
     String getRecipe();
 
-    Document setRecipe(String recipe);
+    Document setRecipe(final String recipe);
+
+    ReadingDirection getReadingDirection();
+
+    Document setReadingDirection(final ReadingDirection readingDirection);
 
     int getNumberOfSheets();
 
-    String getSheetNameAt(int i);
+    String getSheetNameAt(final int i);
 
-    Sheet getSheetAt(int i);
+    Sheet getSheetAt(final int i);
 
     Iterable<Sheet> sheets();
 }

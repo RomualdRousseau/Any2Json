@@ -3,10 +3,9 @@ package com.github.romualdrousseau.any2json.base;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-
-import com.github.romualdrousseau.any2json.Header;
 
 public class BaseTableGraph {
 
@@ -49,10 +48,10 @@ public class BaseTableGraph {
     }
 
     public void parse(Consumer<BaseTableGraph> func) {
-        for (final BaseTableGraph child : this.children()) {
+        for (final var child : this.children()) {
             func.accept(child);
         }
-        for (final BaseTableGraph child : this.children()) {
+        for (final var child : this.children()) {
             child.parse(func);
         }
     }
@@ -69,20 +68,9 @@ public class BaseTableGraph {
         if (this.table == null) {
             return abstractHeader;
         }
-
-        BaseHeader result = null;
-        for(final Header header : this.table.headers()) {
-            if (header.equals(abstractHeader)) {
-                result = (BaseHeader) header;
-            }
-        }
-
-        if (result != null) {
-            return result;
-        }
-        else {
-            return parent.findClosestHeader(abstractHeader);
-        }
+        return Optional
+                .ofNullable(this.table.findClosestHeader(abstractHeader))
+                .orElseGet(() -> this.parent.findClosestHeader(abstractHeader));
     }
 
     private final BaseTable table;

@@ -11,9 +11,9 @@ public interface TableParser extends AutoCloseable {
 
     void disablePivot();
 
-    void setParserOptions(String options);
+    void setParserOptions(final String options);
 
-    List<DataTable> getDataTables(BaseSheet sheet, List<BaseTable> tables);
+    List<DataTable> getDataTables(final BaseSheet sheet, final List<BaseTable> tables);
 
-    List<MetaTable> getMetaTables(BaseSheet sheet, List<BaseTable> tables);
+    List<MetaTable> getMetaTables(final BaseSheet sheet, final List<BaseTable> tables);
 }

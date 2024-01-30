@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
 
-import com.github.romualdrousseau.any2json.Header;
 import com.github.romualdrousseau.any2json.PivotOption;
 import com.github.romualdrousseau.any2json.base.BaseHeader;
 import com.github.romualdrousseau.any2json.base.BaseSheet;
@@ -35,13 +34,13 @@ public class IntelliTable extends DataTable {
 
         try {
             this.writer = new DataFrameWriter(BATCH_SIZE, this.tmpHeaders.size());
-            final PivotKeyHeader pivot = this.findPivotHeader();
+            final var pivot = this.findPivotHeader();
             root.parseIf(
                     e -> this.buildRowsForOneTable(e, (DataTable) e.getTable(), pivot),
                     e -> e.getTable() instanceof DataTable);
             this.setLoadCompleted(true);
             this.rows = this.writer.getDataFrame();
-        } catch (IOException x) {
+        } catch (final IOException x) {
             throw new UncheckedIOException(x);
         }
 
@@ -153,7 +152,7 @@ public class IntelliTable extends DataTable {
             final BaseRow orgRow, final RowGroup rowGroup) {
         final var newRow = new Row(this.tmpHeaders.size());
         for (final var abstractHeader : this.tmpHeaders) {
-            final var orgHeaders = orgTable.findHeader(abstractHeader);
+            final var orgHeaders = orgTable.findAllHeaders(abstractHeader);
             this.generateCellsNoPivot(graph, orgHeaders, abstractHeader, rowGroup, orgRow, newRow);
         }
         return newRow;
@@ -163,7 +162,7 @@ public class IntelliTable extends DataTable {
             final BaseRow orgRow, final PivotEntry pivotEntry, final RowGroup rowGroup) {
         final var newRow = new Row(this.tmpHeaders.size());
         for (final var abstractHeader : this.tmpHeaders) {
-            final var orgHeaders = orgTable.findHeader(abstractHeader);
+            final var orgHeaders = orgTable.findAllHeaders(abstractHeader);
             if (abstractHeader instanceof PivotKeyHeader) {
                 if (orgHeaders.size() > 0) {
                     newRow.set(abstractHeader.getColumnIndex() + 0, pivotEntry.getCell().getValue());
@@ -181,7 +180,7 @@ public class IntelliTable extends DataTable {
             final BaseRow orgRow, final PivotEntry pivotEntry, final RowGroup rowGroup) {
         final var newRow = new Row(this.tmpHeaders.size());
         for (final var abstractHeader : this.tmpHeaders) {
-            final var orgHeaders = orgTable.findHeader(abstractHeader);
+            final var orgHeaders = orgTable.findAllHeaders(abstractHeader);
             if (abstractHeader instanceof PivotKeyHeader) {
                 if (orgHeaders.size() > 0) {
                     final var ci = abstractHeader.getColumnIndex();
@@ -200,7 +199,7 @@ public class IntelliTable extends DataTable {
             final BaseRow orgRow, final PivotKeyHeader pivot, final String value, final RowGroup rowGroup) {
         final var newRow = new Row(this.tmpHeaders.size());
         for (final var abstractHeader : this.tmpHeaders) {
-            final var orgHeaders = orgTable.findHeader(abstractHeader);
+            final var orgHeaders = orgTable.findAllHeaders(abstractHeader);
             if (abstractHeader instanceof PivotKeyHeader) {
                 if (orgHeaders.size() > 0) {
                     newRow.set(abstractHeader.getColumnIndex(), value);
@@ -222,7 +221,7 @@ public class IntelliTable extends DataTable {
         return newRow;
     }
 
-    private void generateCellsNoPivot(final BaseTableGraph graph, final List<Header> orgHeaders,
+    private void generateCellsNoPivot(final BaseTableGraph graph, final List<BaseHeader> orgHeaders,
             final BaseHeader abstractHeader, final RowGroup rowGroup, final BaseRow orgRow, final Row newRow) {
         if (orgHeaders.size() > 0) {
             for (final var orgHeader : orgHeaders) {
@@ -265,7 +264,7 @@ public class IntelliTable extends DataTable {
         newRows.forEach(row -> {
             try {
                 this.writer.write(row);
-            } catch (IOException x) {
+            } catch (final IOException x) {
                 throw new UncheckedIOException(x);
             }
         });

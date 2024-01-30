@@ -25,7 +25,7 @@ public class BaseTable implements Table, Visitable {
     }
 
     private BaseTable(final BaseSheet sheet, final int firstColumn, final int firstRow, final int lastColumn,
-            final int lastRow, RowCache cachedRows, List<Integer> ignoreRows) {
+            final int lastRow, final RowCache cachedRows, final List<Integer> ignoreRows) {
         assert (firstColumn <= lastColumn) : "first column must be before last column";
         assert (firstRow <= lastRow) : "first row must be before last row";
 
@@ -70,14 +70,14 @@ public class BaseTable implements Table, Visitable {
             throw new ArrayIndexOutOfBoundsException(rowIndex);
         }
 
-        final int relRowIndex = this.firstRowOffset + rowIndex;
+        final var relRowIndex = this.firstRowOffset + rowIndex;
 
-        BaseRow result = cachedRows.get(this.firstRow + relRowIndex);
+        var result = cachedRows.get(this.firstRow + relRowIndex);
         if (result == null) {
             result = new BaseRow(this, relRowIndex);
 
             // Retrieve ignore status possibly lost in cache removal
-            for(Integer i: this.ignoreRows()) {
+            for(final var i: this.ignoreRows()) {
                 if (i == rowIndex) {
                     result.setIgnored(true);
                 }
@@ -101,8 +101,8 @@ public class BaseTable implements Table, Visitable {
 
     @Override
     public List<String> getHeaderNames() {
-        List<String> result = new ArrayList<String>();
-        for(Header header: this.headers()) {
+        final var result = new ArrayList<String>();
+        for(final var header: this.headers()) {
             if (!header.isColumnEmpty()) {
                 result.add(header.getName());
             }
@@ -180,7 +180,7 @@ public class BaseTable implements Table, Visitable {
         this.lastRowOffset = offset;
     }
 
-    public void adjustLastRow(int lastRow) {
+    public void adjustLastRow(final int lastRow) {
         this.lastRowOffset = -1;
         this.lastRow = lastRow;
     }
@@ -215,19 +215,28 @@ public class BaseTable implements Table, Visitable {
         this.headers.set(i, header);
     }
 
-    public List<Header> findHeader(final Header headerToFind) {
-        final LinkedList<Header> result = new LinkedList<Header>();
-        for (final Header header : this.headers()) {
+    public List<BaseHeader> findAllHeaders(final BaseHeader headerToFind) {
+        final var result = new LinkedList<BaseHeader>();
+        for (final var header : this.headers()) {
             if (header.equals(headerToFind)) {
-                result.add(header);
+                result.add((BaseHeader) header);
             }
         }
         return result;
     }
 
-    public BaseHeader findHeaderByIndex(final int index) {
-        for (final Header header : this.headers()) {
-            if (((BaseHeader) header).getColumnIndex() == index) {
+    public BaseHeader findHeaderByColumnIndex(final int columnIndex) {
+        for (final var header : this.headers()) {
+            if (((BaseHeader) header).getColumnIndex() == columnIndex) {
+                return (BaseHeader) header;
+            }
+        }
+        return null;
+    }
+
+    public BaseHeader findClosestHeader(final BaseHeader headerToFind) {
+        for(final var header : this.headers()) {
+            if (header.equals(headerToFind)) {
                 return (BaseHeader) header;
             }
         }

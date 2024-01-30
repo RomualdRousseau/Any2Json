@@ -19,6 +19,7 @@ import com.github.romualdrousseau.any2json.event.TableGraphBuiltEvent;
 import com.github.romualdrousseau.any2json.event.TableReadyEvent;
 import com.github.romualdrousseau.any2json.intelli.IntelliTable;
 import com.github.romualdrousseau.any2json.transform.TransformableSheet;
+import com.github.romualdrousseau.any2json.transform.op.AutoCrop;
 import com.github.romualdrousseau.shuju.commons.CollectionUtils;
 
 public class BaseSheet implements Sheet {
@@ -36,6 +37,7 @@ public class BaseSheet implements Sheet {
         this.pivotValueFormat = "%s " + Settings.PIVOT_VALUE_SUFFIX;
         this.pivotTypeFormat = "%s " + Settings.PIVOT_TYPE_SUFFIX;
         this.groupValueFormat = "%s " + Settings.GROUP_VALUE_SUFFIX;
+        this.autoCropEnabled = true;
     }
 
     @Override
@@ -65,21 +67,36 @@ public class BaseSheet implements Sheet {
 
     @Override
     public Optional<Table> getTable() {
+
+        // Here is the core of the algorithm
+
         if (this.getLastRowNum() <= 0 || this.getLastColumnNum() <= 0) {
             return Optional.empty();
         }
+
+        // Apply recipes
 
         TransformableSheet.of(this).applyAll();
         if (!this.notifyStepCompleted(new SheetPreparedEvent(this))) {
             return Optional.empty();
         }
 
-        final List<BaseTable> tables = this.getDocument().getSheetParser().findAllTables(this);
+        // Auto crop
+
+        if (this.autoCropEnabled) {
+            AutoCrop.Apply(this);
+        }
+
+        final var document = this.getDocument();
+
+        // Find datatables and metatables
+
+        final List<BaseTable> tables = document.getSheetParser().findAllTables(this);
         if (!this.notifyStepCompleted(new AllTablesExtractedEvent(this, tables))) {
             return Optional.empty();
         }
 
-        final List<DataTable> dataTables = this.getDocument().getTableParser().getDataTables(this, tables);
+        final List<DataTable> dataTables = document.getTableParser().getDataTables(this, tables);
         if (!this.notifyStepCompleted(new DataTableListBuiltEvent(this, dataTables))) {
             return Optional.empty();
         }
@@ -87,14 +104,19 @@ public class BaseSheet implements Sheet {
             return Optional.empty();
         }
 
-        final List<MetaTable> metaTables = this.getDocument().getTableParser().getMetaTables(this, tables);
+        final List<MetaTable> metaTables = document.getTableParser().getMetaTables(this, tables);
         if (!this.notifyStepCompleted(new MetaTableListBuiltEvent(this, metaTables))) {
             return Optional.empty();
         }
 
         final DataTable table;
-        if (this.getDocument().getHints().contains(Document.Hint.INTELLI_LAYOUT)) {
-            final BaseTableGraph root = BaseTableGraphBuilder.Build(metaTables, dataTables);
+        if (document.getHints().contains(Document.Hint.INTELLI_LAYOUT)) {
+
+            // Build table graph: linked the metatable and datatables depending of the reading directional preferences
+            // in perception of visual stimuli depending of the cultures and writing systems.
+
+            final var readingDirection = document.getReadingDirection();
+            final BaseTableGraph root = BaseTableGraphBuilder.build(metaTables, dataTables, readingDirection);
             if (!this.notifyStepCompleted(new TableGraphBuiltEvent(this, root))) {
                 return Optional.empty();
             }
@@ -102,6 +124,9 @@ public class BaseSheet implements Sheet {
         } else {
             table = dataTables.get(0);
         }
+
+        // Tag headers
+
         table.updateHeaderTags();
         this.notifyStepCompleted(new TableReadyEvent(this, table));
 
@@ -113,7 +138,7 @@ public class BaseSheet implements Sheet {
     }
 
     public int getLastColumnNum(final int rowIndex) {
-        final int translatedRow = this.translateRow(rowIndex);
+        final var translatedRow = this.translateRow(rowIndex);
         if (translatedRow < 0) {
             return -1;
         }
@@ -121,11 +146,11 @@ public class BaseSheet implements Sheet {
     }
 
     public boolean hasCellDataAt(final int colIndex, final int rowIndex) {
-        final int translatedColumn = this.translateColumn(colIndex);
+        final var translatedColumn = this.translateColumn(colIndex);
         if (translatedColumn < 0) {
             return false;
         }
-        final int translatedRow = this.translateRow(rowIndex);
+        final var translatedRow = this.translateRow(rowIndex);
         if (translatedRow < 0) {
             return false;
         }
@@ -133,11 +158,11 @@ public class BaseSheet implements Sheet {
     }
 
     public String getCellDataAt(final int colIndex, final int rowIndex) {
-        final int translatedColumn = this.translateColumn(colIndex);
+        final var translatedColumn = this.translateColumn(colIndex);
         if (translatedColumn < 0) {
             return null;
         }
-        final int translatedRow = this.translateRow(rowIndex);
+        final var translatedRow = this.translateRow(rowIndex);
         if (translatedRow < 0) {
             return null;
         }
@@ -148,11 +173,11 @@ public class BaseSheet implements Sheet {
         if (this.unmergedAll) {
             return 1;
         }
-        final int translatedColumn = this.translateColumn(colIndex);
+        final var translatedColumn = this.translateColumn(colIndex);
         if (translatedColumn < 0) {
             return 1;
         }
-        final int translatedRow = this.translateRow(rowIndex);
+        final var translatedRow = this.translateRow(rowIndex);
         if (translatedRow < 0) {
             return 1;
         }
@@ -161,19 +186,19 @@ public class BaseSheet implements Sheet {
 
     public void patchCell(final int colIndex1, final int rowIndex1, final int colIndex2, final int rowIndex2,
             final String value) {
-        final int translatedColumn1 = this.translateColumn(colIndex1);
+        final var translatedColumn1 = this.translateColumn(colIndex1);
         if (translatedColumn1 < 0) {
             return;
         }
-        final int translatedRow1 = this.translateRow(rowIndex1);
+        final var translatedRow1 = this.translateRow(rowIndex1);
         if (translatedRow1 < 0) {
             return;
         }
-        final int translatedColumn2 = this.translateColumn(colIndex2);
+        final var translatedColumn2 = this.translateColumn(colIndex2);
         if (translatedColumn2 < 0) {
             return;
         }
-        final int translatedRow2 = this.translateRow(rowIndex2);
+        final var translatedRow2 = this.translateRow(rowIndex2);
         if (translatedRow2 < 0) {
             return;
         }
@@ -181,7 +206,7 @@ public class BaseSheet implements Sheet {
     }
 
     public boolean notifyStepCompleted(final SheetEvent e) {
-        for (final SheetListener listener : listeners) {
+        for (final var listener : listeners) {
             listener.stepCompleted(e);
         }
         return !e.isCanceled();
@@ -271,6 +296,10 @@ public class BaseSheet implements Sheet {
         this.groupValueFormat = format;
     }
 
+    public void disableAutoCrop() {
+        this.autoCropEnabled = false;
+    }
+
     private int translateColumn(final int colIndex) {
         if (colIndex < 0 || colIndex >= this.columnMask.size()) {
             return -1;
@@ -289,8 +318,8 @@ public class BaseSheet implements Sheet {
         if (this.sheetStore.getLastRowNum() < 0) {
             return -1;
         }
-        int result = this.sheetStore.getLastColumnNum(0);
-        for (int i = 1; i <= Math.min(Settings.DEFAULT_SAMPLE_COUNT, this.sheetStore.getLastRowNum()); i++) {
+        var result = this.sheetStore.getLastColumnNum(0);
+        for (var i = 1; i <= Math.min(Settings.DEFAULT_SAMPLE_COUNT, this.sheetStore.getLastRowNum()); i++) {
             result = Math.max(result, this.sheetStore.getLastColumnNum(i));
         }
         return result;
@@ -311,6 +340,7 @@ public class BaseSheet implements Sheet {
     private String pivotValueFormat;
     private String pivotTypeFormat;
     private String groupValueFormat;
-    private  List<String> pivotEntityList;
+    private List<String> pivotEntityList;
+    private boolean autoCropEnabled;
 
 }

@@ -4,9 +4,9 @@ public interface Header {
 
     String getName();
 
-    Cell getCellAtRow(Row row);
+    Cell getCellAtRow(final Row row);
 
-    Cell getCellAtRow(Row row, boolean merged);
+    Cell getCellAtRow(final Row row, final boolean merged);
 
     boolean hasTag();
 

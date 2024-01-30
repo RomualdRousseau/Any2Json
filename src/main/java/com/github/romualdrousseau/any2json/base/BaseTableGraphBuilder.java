@@ -2,69 +2,76 @@ package com.github.romualdrousseau.any2json.base;
 
 import java.util.List;
 
+import com.github.romualdrousseau.any2json.ReadingDirection;
+
 public class BaseTableGraphBuilder {
 
-    public static BaseTableGraph Build(final List<MetaTable> metaTables, final List<DataTable> dataTables) {
-        final BaseTableGraph root = new BaseTableGraph();
+    public static BaseTableGraph build(final List<MetaTable> metaTables, final List<DataTable> dataTables,
+            final ReadingDirection readingDirection) {
+        final var root = new BaseTableGraph();
 
         for (final Visitable e : metaTables) {
             e.setVisited(false);
         }
 
         // First attach all not snapped metaTables to the root nodes
+
         for (final MetaTable metaTable : metaTables) {
-            if (!isJoint(metaTable, dataTables)) {
+            if (!isSnapped(metaTable, dataTables, readingDirection)) {
                 root.addChild(new BaseTableGraph(metaTable));
                 metaTable.setVisited(true);
             }
         }
 
         // Second attach all snapped metaTables to the closest nodes
+
         for (final MetaTable metaTable : metaTables) {
             if (metaTable.isVisited()) {
                 continue;
             }
 
-            final BaseTableGraph parent = findClosestMetaGraph(root, metaTable, 0, 0);
+            final var parent = findClosestMetaGraph(root, metaTable, 0, 0, readingDirection);
             parent.addChild(new BaseTableGraph(metaTable));
             metaTable.setVisited(true);
         }
 
         // Third attach datatables to the closest metadatas
+
         for (final DataTable dataTable : dataTables) {
-            final BaseTableGraph parent = findClosestMetaGraph(root, dataTable, 0, 1);
+            final var parent = findClosestMetaGraph(root, dataTable, 0, 1, readingDirection);
             parent.addChild(new BaseTableGraph(dataTable));
         }
 
         return root;
     }
 
-    private static boolean isJoint(final MetaTable metaTable, final List<DataTable> dataTables) {
-        for (final DataTable dataTable : dataTables) {
-            if (distanceBetweenTables(metaTable, dataTable) == 0) {
+    private static boolean isSnapped(final MetaTable metaTable, final List<DataTable> dataTables,
+            final ReadingDirection readingDirection) {
+        for (final var dataTable : dataTables) {
+            if (readingDirection.distanceBetweenTables(metaTable, dataTable) == 0) {
                 return true;
             }
         }
         return false;
     }
 
-    private static BaseTableGraph findClosestMetaGraph(final BaseTableGraph root, final BaseTable table, final int level,
-            final int maxLevel) {
+    private static BaseTableGraph findClosestMetaGraph(final BaseTableGraph root, final BaseTable table,
+            final int level, final int maxLevel, final ReadingDirection readingDirection) {
         BaseTableGraph result = root;
 
         if (level > maxLevel) {
             return result;
         }
 
-        double minDist = Double.MAX_VALUE;
-        for (final BaseTableGraph child : root.children()) {
+        var minDist = Double.MAX_VALUE;
+        for (final var child : root.children()) {
             if (!(child.getTable() instanceof MetaTable)) {
                 continue;
             }
 
-            final BaseTableGraph grandChild = findClosestMetaGraph(child, table, level + 1, maxLevel);
-            final double dist1 = distanceBetweenTables(grandChild.getTable(), table);
-            final double dist2 = distanceBetweenTables(child.getTable(), table);
+            final var grandChild = findClosestMetaGraph(child, table, level + 1, maxLevel, readingDirection);
+            final var dist1 = readingDirection.distanceBetweenTables(grandChild.getTable(), table);
+            final var dist2 = readingDirection.distanceBetweenTables(child.getTable(), table);
 
             if (dist1 < dist2) {
                 if (dist1 < minDist) {
@@ -80,15 +87,5 @@ public class BaseTableGraphBuilder {
         }
 
         return result;
-    }
-
-    private static double distanceBetweenTables(final BaseTable table1, final BaseTable table2) {
-        final int vx = table2.getFirstColumn() - table1.getFirstColumn();
-        final int vy = table2.getFirstRow() - table1.getLastRow() - 1;
-        if (vx >= 0 && vy >= 0) {
-            return vx + vy;
-        } else {
-            return Double.MAX_VALUE;
-        }
     }
 }
