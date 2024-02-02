@@ -14,12 +14,13 @@ public class MetaHeader extends BaseHeader {
     public MetaHeader(final BaseTable table, final BaseCell cell) {
         super(table, cell);
 
-        final String cellValue = this.getCell().getValue();
-        this.transformedCell = this.getTable().getSheet().getDocument().getModel()
+        final var model = this.getTable().getSheet().getDocument().getModel();
+        final var cellValue = this.getCell().getValue();
+        this.transformedCell = model
                 .toEntityValue(cellValue)
                 .map(x -> new BaseCell(x, this.getCell()))
                 .orElse(this.getCell());
-        this.name = this.getPivotEntityAsString().orElseGet(() -> this.getTable().getSheet().getDocument().getModel().toEntityName(cellValue));
+        this.name = this.getPivotEntityAsString().orElseGet(() -> model.toEntityName(cellValue));
         this.value = this.transformedCell.getValue();
     }
 
