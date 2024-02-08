@@ -300,6 +300,12 @@ public class BaseSheet implements Sheet {
         this.autoCropEnabled = false;
     }
 
+    public void swapRows(int rowIndex1, int rowIndex2) {
+        final var tmp = this.rowMask.get(rowIndex1);
+        this.rowMask.set(rowIndex1, this.rowMask.get(rowIndex2));
+        this.rowMask.set(rowIndex2, tmp);
+    }
+
     private int translateColumn(final int colIndex) {
         if (colIndex < 0 || colIndex >= this.columnMask.size()) {
             return -1;
@@ -342,5 +348,6 @@ public class BaseSheet implements Sheet {
     private String groupValueFormat;
     private List<String> pivotEntityList;
     private boolean autoCropEnabled;
+
 
 }

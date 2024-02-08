@@ -16,6 +16,7 @@ import com.github.romualdrousseau.any2json.transform.op.DropRowsWhenEntropyLessT
 import com.github.romualdrousseau.any2json.transform.op.DropRowsWhenFillRatioLessThan;
 import com.github.romualdrousseau.any2json.transform.op.RepeatColumnCell;
 import com.github.romualdrousseau.any2json.transform.op.RepeatRowCell;
+import com.github.romualdrousseau.any2json.transform.op.SwapRows;
 import com.github.romualdrousseau.shuju.strings.StringUtils;
 
 /**
@@ -317,6 +318,16 @@ public class TransformableSheet {
      */
     public void dropRowsWhenEntropyLessThan(final float max, final int start, final int stop) {
         DropRowsWhenEntropyLessThan.Apply(this.sheet, max, start, stop);
+    }
+
+    /**
+     * This method swap 2 rows from the sheet.
+     *
+     * @param row1 the row1
+     * @param row2 the row2
+     */
+    public void swapRows(final int rowIndex1, final int rowIndex2) {
+        SwapRows.Apply(this.sheet, rowIndex1, rowIndex2);
     }
 
     private final BaseSheet sheet;
