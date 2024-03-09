@@ -32,6 +32,10 @@ public class SimpleTagClassifier implements TagClassifier {
     }
 
     @Override
+    public void updateModel(final Model model) {
+    }
+
+    @Override
     public String predict(String name, List<String> entities, List<String> context) {
         final var m = pattern.matcher(name);
         if (m.find()) {

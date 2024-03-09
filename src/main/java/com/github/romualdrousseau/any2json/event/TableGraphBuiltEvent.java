@@ -20,7 +20,7 @@ public class TableGraphBuiltEvent extends SheetEvent {
     }
 
     public void dumpTableGraph(final PrintStream con) {
-        con.println("============================ DUMP TABLEGRAPH ============================");
+        con.println("============================== DUMP GRAPH ===============================");
         con.println(this.getSource().getName());
         this.walkThroughTableGraph(con, this.tableGraph, 0, 0);
         con.println("================================== END ==================================");

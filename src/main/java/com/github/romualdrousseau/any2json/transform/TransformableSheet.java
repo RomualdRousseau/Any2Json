@@ -149,10 +149,22 @@ public class TransformableSheet {
      * This method sets the bitmap threshold for the sheet. The bitmap threshold represents the strength of
      * close elements in a sheet to be combined together.
      *
-     * @param bitmapThreshold the bitmap threshold
+     * @param threshold the bitmap threshold
+     * @deprecated use {@link TransformableSheet#setExtractionThreshold(float)}
      */
-    public void setBitmapThreshold(final float bitmapThreshold) {
-        this.sheet.setBitmapThreshold(bitmapThreshold);
+    public void setBitmapThreshold(final float threshold) {
+        this.sheet.setExtractionThreshold(threshold);
+    }
+
+    /**
+     * This method sets the extraction threshold for the sheet. The extraction threshold represents the strength of
+     * close elements in a sheet to be combined together. With a value of 0, the elements with the smallest area will be
+     * extracted.
+     *
+     * @param threshold the extraction threshold
+     */
+    public void setExtractionThreshold(final float threshold) {
+        this.sheet.setExtractionThreshold(threshold);
     }
 
     /**

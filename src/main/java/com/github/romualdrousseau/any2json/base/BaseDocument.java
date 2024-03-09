@@ -91,6 +91,12 @@ public abstract class BaseDocument implements Document {
     }
 
     @Override
+    public Document setRecipe(final String... recipe) {
+        this.recipe = String.join("\n", recipe);
+        return this;
+    }
+
+    @Override
     public ReadingDirection getReadingDirection() {
         return this.readingDirection;
     }

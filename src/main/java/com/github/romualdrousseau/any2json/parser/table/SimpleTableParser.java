@@ -3,6 +3,7 @@ package com.github.romualdrousseau.any2json.parser.table;
 import java.util.Collections;
 import java.util.List;
 
+import com.github.romualdrousseau.any2json.Model;
 import com.github.romualdrousseau.any2json.TableParser;
 import com.github.romualdrousseau.any2json.base.BaseCell;
 import com.github.romualdrousseau.any2json.base.BaseSheet;
@@ -35,6 +36,10 @@ public class SimpleTableParser implements TableParser {
     @Override
     public List<MetaTable> getMetaTables(final BaseSheet sheet, final List<BaseTable> tables) {
         return Collections.emptyList();
+    }
+
+    @Override
+    public void updateModel(final Model model) {
     }
 
     private void parseDataTable(DataTable table) {

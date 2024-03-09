@@ -32,6 +32,8 @@ public interface Document extends AutoCloseable {
 
     Document setRecipe(final String recipe);
 
+    Document setRecipe(final String... recipe);
+
     ReadingDirection getReadingDirection();
 
     Document setReadingDirection(final ReadingDirection readingDirection);

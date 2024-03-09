@@ -240,7 +240,7 @@ public class BaseSheet implements Sheet {
         return this.bitmapThreshold;
     }
 
-    public void setBitmapThreshold(final float bitmapThreshold) {
+    public void setExtractionThreshold(final float bitmapThreshold) {
         this.bitmapThreshold = bitmapThreshold;
     }
 

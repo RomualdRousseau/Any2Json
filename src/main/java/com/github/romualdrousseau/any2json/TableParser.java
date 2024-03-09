@@ -9,6 +9,8 @@ import com.github.romualdrousseau.any2json.base.MetaTable;
 
 public interface TableParser extends AutoCloseable {
 
+    void updateModel(final Model model);
+
     void disablePivot();
 
     void setParserOptions(final String options);

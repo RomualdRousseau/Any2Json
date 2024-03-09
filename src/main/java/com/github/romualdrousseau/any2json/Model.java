@@ -32,18 +32,19 @@ public class Model {
         this.tags = tags;
         this.requiredTags = requiredTags;
         this.comparer = new RegexComparer(this.patterns);
+        this.update();
     }
 
     public Model(final JSONObject model) {
         this.model = model;
-        this.entities = JSON.<String>streamOf(model.getArray("entities")).toList();
+        this.entities = JSON.<String>streamOf(model.getArray("entities")).collect(Collectors.toList());
         this.patterns = JSON.<JSONObject>streamOf(model.getArray("patterns"))
                 .collect(Collectors.toMap(x -> x.getString("key"), x -> x.getString("value")));
-        this.filters = JSON.<String>streamOf(model.getArray("filters")).toList();
-        this.pivotEntityList = JSON.<String>streamOf(model.getArray("pivotEntityList")).toList();
-        this.tags = JSON.<String>streamOf(model.getArray("tags")).toList();
-        this.requiredTags = JSON.<String>streamOf(model.getArray("requiredTags")).toList();
-        this.comparer = new RegexComparer(this.patterns);
+        this.filters = JSON.<String>streamOf(model.getArray("filters")).collect(Collectors.toList());
+        this.pivotEntityList = JSON.<String>streamOf(model.getArray("pivotEntityList")).collect(Collectors.toList());
+        this.tags = JSON.<String>streamOf(model.getArray("tags")).collect(Collectors.toList());
+        this.requiredTags = JSON.<String>streamOf(model.getArray("requiredTags")).collect(Collectors.toList());
+        this.update();
     }
 
     public List<String> getFilters() {
@@ -52,6 +53,10 @@ public class Model {
 
     public List<String> getEntityList() {
         return this.entities;
+    }
+
+    public Map<String, String> getPatternMap() {
+        return this.patterns;
     }
 
     public List<String> getPivotEntityList() {
@@ -83,6 +88,18 @@ public class Model {
         return model;
     }
 
+    public void update() {
+        this.comparer = new RegexComparer(this.patterns);
+    }
+
+    public void registerTableParser(final TableParser tableParser) {
+        tableParser.updateModel(this);
+    }
+
+    public void registerTagClassifier(final TagClassifier tagClassifier) {
+        tagClassifier.updateModel(this);
+    }
+
     private final JSONObject model;
     private final List<String> entities;
     private final Map<String, String> patterns;
@@ -90,5 +107,5 @@ public class Model {
     private final List<String> pivotEntityList;
     private final List<String> tags;
     private final List<String> requiredTags;
-    private final RegexComparer comparer;
+    private RegexComparer comparer;
 }
