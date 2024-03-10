@@ -78,13 +78,22 @@ mvn -P release clean deploy
 Run the following command line:
 
 ```bash
-mvn -P documentation clean site
+mvn -P documentation clean site site-deploy
+```
+
+Do not forget to configure the GitHub authentication in ***~/.m2/settings.xml*** as follow:
+
+```xml
+<server>
+    <id>github</id>
+    <password>PERSONAL_TOKEN_CLASSIC</password>
+</server>
 ```
 
 ### Documentation
 
-* Please find the project documentation [here](https://romualdrousseau.github.io/Any2Json-Documents/).
-* Please find the javadoc documentation [here](https://romualdrousseau.github.io/Any2Json/).
+* Find the project documentation [here](https://romualdrousseau.github.io/Any2Json-Documents/).
+* Find the javadoc documentation [here](https://romualdrousseau.github.io/Any2Json/).
 
 ## Authors
 
