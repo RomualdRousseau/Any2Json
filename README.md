@@ -1,4 +1,3 @@
-
 # Any2Json
 
 ![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)
@@ -8,7 +7,7 @@
 ![Test](https://github.com/RomualdRousseau/Any2Json/actions/workflows/build-and-test.yml/badge.svg)
 ![Build](https://github.com/RomualdRousseau/Any2Json/actions/workflows/build-and-deploy.yml/badge.svg)
 
-This is a java API to manipulate semi structured documents and extract data from them.
+A java API to manipulate semi structured documents and extract data from them.
 
 ## Description
 
@@ -84,8 +83,8 @@ mvn -P documentation clean site
 
 ### Documentation
 
-* Please find the project documentation on [github.io](https://romualdrousseau.github.io/Any2Json-Documents/).
-* Please find the javadoc documentation on [github.io](https://romualdrousseau.github.io/Any2Json/).
+* Please find the project documentation [here](https://romualdrousseau.github.io/Any2Json-Documents/).
+* Please find the javadoc documentation [here](https://romualdrousseau.github.io/Any2Json/).
 
 ## Authors
 

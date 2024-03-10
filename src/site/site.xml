@@ -11,8 +11,8 @@
 
     <bannerLeft>
         <name>Any2Json</name>
-        <src></src>
-        <href></href>
+        <src>images/any2json-logo.png</src>
+        <href>https://romualdrousseau.github.io/Any2Json/</href>
     </bannerLeft>
 
     <body>

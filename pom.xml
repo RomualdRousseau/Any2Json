@@ -8,7 +8,7 @@
 
     <name>Any2Json</name>
     <description>
-        This is a java API to manipulate semi structured documents and extract data from them.
+        A java API to manipulate semi structured documents and extract data from them.
     </description>
     <url>https://github.com/romualdrousseau/any2json</url>
 
@@ -36,6 +36,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <!-- ShuJu Framework -->
         <shuju.version>1.23</shuju.version>
+        <!-- Other Framework -->
         <jython.version>2.7.3</jython.version>
         <jackson.version>2.15.2</jackson.version>
         <!-- Test Framework -->
@@ -43,12 +44,12 @@
         <hamcrest.version>2.2</hamcrest.version>
     </properties>
 
-    <scm>
+    <!-- <scm>
         <connection>scm:git:https://github.com/romualdrousseau/any2json.git</connection>
         <developerConnection>scm:git:https://github.com/romualdrousseau/any2json.git</developerConnection>
         <url>https://github.com/romualdrousseau/any2json</url>
         <tag>HEAD</tag>
-    </scm>
+    </scm> -->
 
     <distributionManagement>
         <snapshotRepository>
@@ -330,39 +331,31 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-site-plugin</artifactId>
                         <version>3.12.1</version>
+                        <configuration>
+                            <host>127.0.0.1</host>
+                            <skipDeploy>true</skipDeploy>
+                        </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-project-info-reports-plugin</artifactId>
                         <version>3.5.0</version>
                     </plugin>
-                    <!-- <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.6.3</version>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin> -->
                     <plugin>
                         <groupId>com.github.github</groupId>
                         <artifactId>site-maven-plugin</artifactId>
                         <version>0.12</version>
+                        <configuration>
+                            <server>github</server>
+                            <message>Creating site for ${project.version}</message>
+                            <merge>true</merge>
+                        </configuration>
                         <executions>
                             <execution>
-                                <phase>site</phase>
                                 <goals>
                                     <goal>site</goal>
                                 </goals>
-                                <configuration>
-                                    <server>github.com</server>
-                                    <message>Building site for ${project.version}</message>
-                                </configuration>
+                                <phase>site-deploy</phase>
                             </execution>
                         </executions>
                     </plugin>
