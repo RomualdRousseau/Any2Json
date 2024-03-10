@@ -32,8 +32,31 @@ jobs:
                     name: target
                     path: target
 
+    test:
+        needs: build
+        runs-on: [ubuntu-latest]
+        steps:
+            -   uses: actions/checkout@v3
+            -   name: Set up JDK 17
+
+                uses: actions/setup-java@v3
+                with:
+                    java-version: 17
+                    distribution: 'temurin'
+
+            -   uses: actions/cache@v3
+                with:
+                    path: ~/.m2/repository
+                    key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+
+            -   name: Installing local dependencies
+                run: mvn initialize
+
+            -   name: Test project
+                run: mvn -B test --file pom.xml
+
     check-version-is-release:
-        needs: [build]
+        needs: [test]
         runs-on: [ubuntu-latest]
         outputs:
             is_release: ${{ steps.check_version.outputs.is_release }}
