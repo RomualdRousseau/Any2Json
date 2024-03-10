@@ -335,8 +335,8 @@ public class TransformableSheet {
     /**
      * This method swap 2 rows from the sheet.
      *
-     * @param row1 the row1
-     * @param row2 the row2
+     * @param rowIndex1 the index of row1
+     * @param rowIndex2 the index of row2
      */
     public void swapRows(final int rowIndex1, final int rowIndex2) {
         SwapRows.Apply(this.sheet, rowIndex1, rowIndex2);
