@@ -7,7 +7,9 @@
     <packaging>jar</packaging>
 
     <name>Any2Json</name>
-    <description>Convert any text file in Json</description>
+    <description>
+        This is a java API to manipulate semi structured documents and extract data from them.
+    </description>
     <url>https://github.com/romualdrousseau/any2json</url>
 
     <licenses>
@@ -32,11 +34,11 @@
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-
+        <!-- ShuJu Framework -->
         <shuju.version>1.23</shuju.version>
         <jython.version>2.7.3</jython.version>
         <jackson.version>2.15.2</jackson.version>
-
+        <!-- Test Framework -->
         <junit.version>4.13.2</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
     </properties>
@@ -146,7 +148,7 @@
                     <argLine>-Darrow.memory.debug.allocator=true</argLine>
                     <reportFormat>plain</reportFormat>
                     <consoleOutputReporter>
-                    <disable>true</disable>
+                        <disable>true</disable>
                     </consoleOutputReporter>
                     <statelessTestsetInfoReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5StatelessTestsetInfoTreeReporterUnicode"/>
                 </configuration>
@@ -372,6 +374,15 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <version>3.6.3</version>
+                        <reportSets>
+                            <reportSet>
+                                <id>build-reports</id>
+                                <reports>
+                                    <report>javadoc</report>
+                                    <!--<report>test-javadoc</report>-->
+                                </reports>
+                            </reportSet>
+                        </reportSets>
                     </plugin>
                 </plugins>
             </reporting>
