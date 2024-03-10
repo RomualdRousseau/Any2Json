@@ -1,11 +1,12 @@
 
 # Any2Json
 
-![Test](https://github.com/RomualdRousseau/Any2Json/actions/workflows/build-and-test.yml/badge.svg)
-![Build](https://github.com/RomualdRousseau/Any2Json/actions/workflows/build-and-deploy.yml/badge.svg)
+![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)
 ![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.romualdrousseau/any2json/badge.svg)
 ![Snyk security score](https://snyk-widget.herokuapp.com/badge/mvn/com.github.romualdrousseau/any2json/badge.svg)
 ![Snyk Known Vulnerabilities](https://snyk.io/test/github/com.github.romualdrousseau/any2json/badge.svg)
+![Test](https://github.com/RomualdRousseau/Any2Json/actions/workflows/build-and-test.yml/badge.svg)
+![Build](https://github.com/RomualdRousseau/Any2Json/actions/workflows/build-and-deploy.yml/badge.svg)
 
 This is a java API to manipulate semi structured documents and extract data from them.
 
