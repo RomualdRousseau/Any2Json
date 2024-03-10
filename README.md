@@ -1,25 +1,98 @@
+
 # Any2Json
 
-![Build](https://github.com/RomualdRousseau/Any2Json/workflows/Build/badge.svg)
+![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)
+![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.romualdrousseau/any2json/badge.svg)
+![Snyk security score](https://snyk-widget.herokuapp.com/badge/mvn/com.github.romualdrousseau/any2json/badge.svg)
+![Snyk Known Vulnerabilities](https://snyk.io/test/github/com.github.romualdrousseau/any2json/badge.svg)
+![Test](https://github.com/RomualdRousseau/Any2Json/actions/workflows/build-and-test.yml/badge.svg)
+![Build](https://github.com/RomualdRousseau/Any2Json/actions/workflows/build-and-deploy.yml/badge.svg)
 
 This is a java API to manipulate semi structured documents and extract data from them.
 
-Semi structured documents are documents with a natural layout and structure, such as scientific papers, excel files, web pages ... Such documents contain structured entities such as numbers, dates, labels but within a format not well-defined. But because of the nature of their content, the document possess an inherent structure linking the different entities given by their layout. For example, a document may contain a title, some texts, some tables and captions. The meaning of the data contained in the tables are explained by the caption, the text around them and the title.
+## Description
 
-Any2Json helps to parse semi stuctured documents (in different format such as Excel, text, Html ...), walk through its different elements and extract data with their context (or metadata).
+In today's data-driven landscape, navigating the complexities of semi-structured documents poses a significant challenge
+for organizations. These documents, characterized by diverse formats and a lack of standardization, often require
+specialized skills for effective manipulation and analysis. However, we propose a novel framework to address this
+challenge. By leveraging innovative algorithms and machine learning techniques, [Any2Json](https://github.com/RomualdRousseau/Any2Json)
+offers a solution that transcends manual coding, providing enhanced accessibility to users across diverse skill levels.
+Moreover, by automating the extraction process, it not only saves time but also minimizes errors, particularly beneficial
+for industries dealing with large volumes of such documents. Crucially, this framework integrates seamlessly with machine
+learning workflows, unlocking new possibilities for data enrichment and predictive modeling. Aligned with the paradigm of
+data as a service, it offers a scalable and efficient means of managing semi-structured data, thereby expanding the toolkit
+of data services available to organizations.
 
-Technically, Any2json builds a graph of structured entities and tags them with a given dictionary. By searching data through their tags, Any2Json cano extract structured data.
+## Getting Started
 
-The construction of the graph use several technics from computer vision to neural network. Computer vision algorithms are used to find area and shapes in the document such as tables, block of text, etc ... Then a neural network will infere the inherent structure of the document to link the entities, weighted by their semantic relations. From the graph, another neural network will tag the entities by doing a NLP anaylis of the text around them.
+### Dependencies
 
-The biggest part of the API is the inference of table layouts to extract their data. Tables may contains headers, sub headers, pivot columns, footers, captions. A technic close to deep reinforcement learning is used to define each part of the table. The parts of a table are supposed to be a chain of markov where the type of a part is defined by the previous part (header precedes a data row) and the probability sequences store in a neural network.
+* The Java Developer Kit, version 17.
+* Apache Maven, version 3.0 or above.
 
-The tags are based on a word2vec approach (onehot + pca reduction) with a neural network to classify thoe words by the tags.
+### Apache Maven Installation
 
-## Project Documentation
+For more details, see the [Installation Guide](https://maven.apache.org/install.html).
 
-https://romualdrousseau.github.io/Any2Json/
+#### Update dependencies
 
-## User Guide
+Run the following command line:
 
-https://github.com/RomualdRousseau/Any2Json/wiki
+```bash
+mvn -DcreateChecksum=true versions:display-dependency-updates
+```
+
+#### Update pom.xml plugins
+
+Run the following command line:
+
+```bash
+mvn -DcreateChecksum=true versions:display-plugin-updates
+```
+
+### Build and install locally
+
+Run the following command line:
+
+```bash
+mvn clean install
+```
+
+### Build and deploy a snapshot to the Maven repository
+
+Run the following command line:
+
+```bash
+mvn -P snapshot clean deploy
+```
+
+### Build and deploy a release to the Maven repository
+
+Run the following command line:
+
+```bash
+mvn -P release clean deploy
+```
+
+### Build and deploy the javadoc documentation
+
+Run the following command line:
+
+```bash
+mvn -P documentation clean site
+```
+
+### Documentation
+
+* Please find the project documentation on [github.io](https://romualdrousseau.github.io/Any2Json-Documents/).
+* Please find the javadoc documentation on [github.io](https://romualdrousseau.github.io/Any2Json/).
+
+## Authors
+
+* Romuald Rousseau, romuald.rousseau@servier.com
+
+## Version History
+
+* 2.37
+* ...
+* Initial Release
