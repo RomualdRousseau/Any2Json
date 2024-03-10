@@ -1,9 +1,9 @@
 
 # Any2Json
 
-![Maven Central](https://maven-badges.herokuapp.com/maven-central/cz.jirutka.rsql/rsql-parser/badge.svg)
 ![Test](https://github.com/RomualdRousseau/Any2Json/actions/workflows/build-and-test.yml/badge.svg)
 ![Build](https://github.com/RomualdRousseau/Any2Json/actions/workflows/build-and-deploy.yml/badge.svg)
+![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.romualdrousseau/shuju/badge.svg)
 
 This is a java API to manipulate semi structured documents and extract data from them.
 
