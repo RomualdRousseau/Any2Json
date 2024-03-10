@@ -18,6 +18,8 @@ learning workflows, unlocking new possibilities for data enrichment and predicti
 data as a service, it offers a scalable and efficient means of managing semi-structured data, thereby expanding the toolkit
 of data services available to organizations.
 
+## Getting Started
+
 ### Dependencies
 
 * The Java Developer Kit, version 17.
