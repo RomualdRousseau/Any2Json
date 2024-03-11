@@ -89,6 +89,7 @@ public class TransformableSheet {
      * @param threshold the bitmap threshold
      * @deprecated use {@link TransformableSheet#setCapillarityThreshold(float)}
      */
+    @Deprecated
     public void setBitmapThreshold(final float threshold) {
         this.sheet.setCapillarityThreshold(threshold);
     }
