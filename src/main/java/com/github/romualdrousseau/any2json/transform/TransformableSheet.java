@@ -71,14 +71,6 @@ public class TransformableSheet {
     }
 
     /**
-     * This method disables auto cropping of a sheets. The auto cropping will drop all empty rows and columns on the
-     * edges of the sheets.
-     */
-    public void disableAutoCrop() {
-        this.sheet.disableAutoCrop();
-    }
-
-    /**
      * This method sets the reading direction. The reading direction controls how the different elements of a sheets are
      * linked together. The reading direction is a reading directional preferences in perception of visual stimuli
      * depending of the cultures and writing systems.
@@ -88,6 +80,36 @@ public class TransformableSheet {
      */
     public void setReadingDirection(final ReadingDirection readingDirection) {
         this.sheet.getDocument().setReadingDirection(readingDirection);
+    }
+
+    /**
+     * This method sets the bitmap threshold for the sheet. The bitmap threshold represents the strength of
+     * close elements in a sheet to be combined together.
+     *
+     * @param threshold the bitmap threshold
+     * @deprecated use {@link TransformableSheet#setCapillarityThreshold(float)}
+     */
+    public void setBitmapThreshold(final float threshold) {
+        this.sheet.setCapillarityThreshold(threshold);
+    }
+
+    /**
+     * This method sets the extraction threshold for the sheet. The extraction threshold represents the strength of
+     * close elements in a sheet to be combined together. With a value of 0, the elements with the smallest area will be
+     * extracted.
+     *
+     * @param threshold the extraction threshold
+     */
+    public void setCapillarityThreshold(final float threshold) {
+        this.sheet.setCapillarityThreshold(threshold);
+    }
+
+    /**
+     * This method disables auto cropping of a sheets. The auto cropping will drop all empty rows and columns on the
+     * edges of the sheets.
+     */
+    public void disableAutoCrop() {
+        this.sheet.disableAutoCrop();
     }
 
     /**
@@ -145,27 +167,7 @@ public class TransformableSheet {
         this.sheet.patchCell(colIndex1, rowIndex1, colIndex2, rowIndex2, value);
     }
 
-    /**
-     * This method sets the bitmap threshold for the sheet. The bitmap threshold represents the strength of
-     * close elements in a sheet to be combined together.
-     *
-     * @param threshold the bitmap threshold
-     * @deprecated use {@link TransformableSheet#setExtractionThreshold(float)}
-     */
-    public void setBitmapThreshold(final float threshold) {
-        this.sheet.setExtractionThreshold(threshold);
-    }
 
-    /**
-     * This method sets the extraction threshold for the sheet. The extraction threshold represents the strength of
-     * close elements in a sheet to be combined together. With a value of 0, the elements with the smallest area will be
-     * extracted.
-     *
-     * @param threshold the extraction threshold
-     */
-    public void setExtractionThreshold(final float threshold) {
-        this.sheet.setExtractionThreshold(threshold);
-    }
 
     /**
      * This method disables the pivot functionality of the sheet's associated document.
