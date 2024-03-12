@@ -236,12 +236,12 @@ public class BaseSheet implements Sheet {
         this.unmergedAll = true;
     }
 
-    public float getBitmapThreshold() {
-        return this.bitmapThreshold;
+    public float getCapillarityThreshold() {
+        return this.capillarityThreshold;
     }
 
-    public void setCapillarityThreshold(final float bitmapThreshold) {
-        this.bitmapThreshold = bitmapThreshold;
+    public void setCapillarityThreshold(final float threshold) {
+        this.capillarityThreshold = threshold;
     }
 
     public List<String> getPivotEntityList() {
@@ -340,7 +340,7 @@ public class BaseSheet implements Sheet {
     private final int storeLastColumnNum;
 
     private boolean unmergedAll = false;
-    private float bitmapThreshold = Settings.DEFAUTL_BITMAP_THRESHOLD;
+    private float capillarityThreshold = Settings.DEFAULT_CAPILLARITY_THRESHOLD;
     private PivotOption pivotOption;
     private String pivotKeyFormat;
     private String pivotValueFormat;

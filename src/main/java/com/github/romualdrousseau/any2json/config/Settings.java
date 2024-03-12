@@ -6,7 +6,7 @@ public class Settings {
 
     public final static float DEFAULT_RATIO_SIMILARITY = 0.35f;
     public final static float DEFAULT_ENTITY_PROBABILITY = 0.6f;
-    public final static float DEFAUTL_BITMAP_THRESHOLD = 0.5f;
+    public final static float DEFAULT_CAPILLARITY_THRESHOLD = 0.5f;
 
     public final static String PIVOT_KEY_SUFFIX = "#PIVOT?";
     public final static String PIVOT_VALUE_SUFFIX = "#VALUE?";

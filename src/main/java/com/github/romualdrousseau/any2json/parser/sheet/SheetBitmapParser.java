@@ -35,7 +35,7 @@ public class SheetBitmapParser implements SheetParser {
     private List<BaseTable> findAllTables(final BaseSheet sheet, final SheetBitmap image) {
         final ArrayList<BaseTable> result = new ArrayList<BaseTable>();
 
-        final List<SearchPoint[]> rectangles = this.findAllRectangles(image, sheet.getBitmapThreshold());
+        final List<SearchPoint[]> rectangles = this.findAllRectangles(image, sheet.getCapillarityThreshold());
         for (final SearchPoint[] rectangle : rectangles) {
             final int firstColumnNum = rectangle[0].getX();
             int firstRowNum = rectangle[0].getY();
@@ -75,9 +75,15 @@ public class SheetBitmapParser implements SheetParser {
 
     private List<SearchPoint[]> findAllRectangles(final SheetBitmap original, final float threshold) {
         final ISearchBitmap filtered = original.clone();
-        if (threshold > 0.0f) {
+        if (threshold == 0.5f) {
             final Filter filter = new Filter(new Template(new float[][] { { 0, 0, 0 }, { 1, 1, 0 }, { 0, 0, 0 } }));
-            filter.apply(original, filtered, threshold);
+            filter.apply(original, filtered, 0.5f);
+        } else if (threshold == 1.0f) {
+            final Filter filter = new Filter(new Template(new float[][] { { 0, 1, 0 }, { 1, 1, 0 }, { 0, 0, 0 } }));
+            filter.apply(original, filtered, 0.5f);
+        } else if (threshold == 1.5f) {
+            final Filter filter = new Filter(new Template(new float[][] { { 0, 1, 0 }, { 0, 1, 0 }, { 0, 0, 0 } }));
+            filter.apply(original, filtered, 0.5f);
         }
 
         List<SearchPoint[]> rectangles = new RectangleExtractor().extractAll(filtered);
