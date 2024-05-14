@@ -1,13 +1,1 @@
 com.github.romualdrousseau.any2json
-com.github.romualdrousseau.any2json.base
-com.github.romualdrousseau.any2json.classifier
-com.github.romualdrousseau.any2json.config
-com.github.romualdrousseau.any2json.event
-com.github.romualdrousseau.any2json.header
-com.github.romualdrousseau.any2json.intelli
-com.github.romualdrousseau.any2json.parser.sheet
-com.github.romualdrousseau.any2json.parser.table
-com.github.romualdrousseau.any2json.readdir
-com.github.romualdrousseau.any2json.transform
-com.github.romualdrousseau.any2json.transform.op
-com.github.romualdrousseau.any2json.util
