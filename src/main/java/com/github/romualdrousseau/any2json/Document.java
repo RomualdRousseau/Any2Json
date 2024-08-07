@@ -6,6 +6,7 @@ import java.util.EnumSet;
 public interface Document extends AutoCloseable {
 
     enum Hint {
+        INTELLI_EXTRACT,
         INTELLI_LAYOUT,
         INTELLI_TAG
     }

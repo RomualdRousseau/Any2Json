@@ -1,6 +1,8 @@
 package com.github.romualdrousseau.any2json;
 
 import java.util.List;
+import java.util.Arrays;
+import java.util.EnumSet;
 
 import org.python.util.PythonInterpreter;
 
@@ -63,6 +65,18 @@ public class TransformableSheet {
                 pyInterp.exec(recipe);
             }
         }
+    }
+
+    /**
+     * This method sets the parser hints for the parsers used by the sheet's
+     * associated document.
+     *
+     * @param hints the parser hints
+     */
+    public void setHints(final String hints) {
+        final var l = Arrays.asList(hints.split(",")).stream().map(Document.Hint::valueOf).toList();
+        final var h = EnumSet.copyOf(l);
+        this.sheet.getDocument().setHints(h);
     }
 
     /**
