@@ -79,8 +79,56 @@ public class TransformableSheet {
     }
 
     /**
+     * This method sets the extraction threshold for the sheet. The extraction
+     * threshold represents the strength of close elements to be combined together.
+     * With a value of 0, the elements with the smallest area will be extracted.
+     *
+     * Prerequisities: INTELLI_EXTRACT
+     *
+     * @param threshold the bitmap threshold
+     * @deprecated use {@link TransformableSheet#setCapillarityThreshold(float)}
+     */
+    @Deprecated
+    public void setBitmapThreshold(final float threshold) {
+        this.sheet.setCapillarityThreshold(threshold);
+    }
+
+    /**
+     * This method sets the extraction threshold for the sheet. The extraction
+     * threshold represents the strength of close elements to be combined together.
+     * With a value of 0, the elements with the smallest area will be extracted.
+     *
+     * Prerequisities: INTELLI_EXTRACT
+     *
+     * @param threshold the extraction threshold
+     */
+    public void setCapillarityThreshold(final float threshold) {
+        this.sheet.setCapillarityThreshold(threshold);
+    }
+
+    /**
+     * This method sets the reading direction. The reading direction controls how
+     * the different elements of a sheets are
+     * linked together. The reading direction is a reading directional preferences
+     * in perception of visual stimuli
+     * depending of the cultures and writing systems.
+     *
+     * By default, the reading direction is set to GutenbergReading (or Left-Right
+     * Then Top-Botton, or LRTB, or normal Western reading order).
+     *
+     * Prerequisities: INTELLI_LAYOUT
+     *
+     * @param readingDirection the reading direction
+     */
+    public void setReadingDirection(final ReadingDirection readingDirection) {
+        this.sheet.getDocument().setReadingDirection(readingDirection);
+    }
+
+     /**
      * This method sets the parser options for the table parser used by the sheet's
      * associated document.
+     *
+     * Prerequisities: INTELLI_LAYOUT
      *
      * @param options the parser options
      * @deprecated use {@link TransformableSheet#setParserOptions(String)}
@@ -93,6 +141,8 @@ public class TransformableSheet {
     /**
      * This method sets the parser options for the table parser used by the sheet's
      * associated document.
+     *
+     * Prerequisities: INTELLI_LAYOUT
      *
      * @param options the parser options
      */
@@ -120,47 +170,6 @@ public class TransformableSheet {
     }
 
     /**
-     * This method sets the reading direction. The reading direction controls how
-     * the different elements of a sheets are
-     * linked together. The reading direction is a reading directional preferences
-     * in perception of visual stimuli
-     * depending of the cultures and writing systems.
-     *
-     * By default, the reading direction is set to GutenbergReading (or Left-Right
-     * Then Top-Botton, or LRTB,
-     * or normal Western reading order).
-     */
-    public void setReadingDirection(final ReadingDirection readingDirection) {
-        this.sheet.getDocument().setReadingDirection(readingDirection);
-    }
-
-    /**
-     * This method sets the bitmap threshold for the sheet. The bitmap threshold
-     * represents the strength of
-     * close elements in a sheet to be combined together.
-     *
-     * @param threshold the bitmap threshold
-     * @deprecated use {@link TransformableSheet#setCapillarityThreshold(float)}
-     */
-    @Deprecated
-    public void setBitmapThreshold(final float threshold) {
-        this.sheet.setCapillarityThreshold(threshold);
-    }
-
-    /**
-     * This method sets the extraction threshold for the sheet. The extraction
-     * threshold represents the strength of
-     * close elements in a sheet to be combined together. With a value of 0, the
-     * elements with the smallest area will be
-     * extracted.
-     *
-     * @param threshold the extraction threshold
-     */
-    public void setCapillarityThreshold(final float threshold) {
-        this.sheet.setCapillarityThreshold(threshold);
-    }
-
-    /**
      * This method disables auto naming the headers of a table. The table will
      * retain its original name.
      */
@@ -169,9 +178,8 @@ public class TransformableSheet {
     }
 
     /**
-     * This method disables auto cropping of a sheets. The auto cropping will drop
-     * all empty rows and columns on the
-     * edges of the sheets.
+     * This method disables auto cropping of a sheets. The auto cropping drops
+     * all empty rows and columns on the edges of the sheets.
      */
     public void disableAutoCrop() {
         this.sheet.disableAutoCrop();
@@ -185,9 +193,8 @@ public class TransformableSheet {
     }
 
     /**
-     * This method merges the cells in the column specified by the given column
-     * index. The value of a given cell is
-     * copied to all blank cells below it.
+     * This method repeat the value for all the cells in the column specified by the
+     * given column index. The value of a given cell is copied to all blank cells below it.
      *
      * @param colIndex the column index
      *
@@ -200,8 +207,7 @@ public class TransformableSheet {
 
     /**
      * This method repeat the value for all the cells in the column specified by the
-     * given column index.
-     * The value of a given cell is copied to all blank cells below it.
+     * given column index. The value of a given cell is copied to all blank cells below it.
      *
      * @param colIndex the column index
      */
@@ -211,8 +217,7 @@ public class TransformableSheet {
 
     /**
      * This method repeat the value for all the cells in the row specified by the
-     * given row index.
-     * The value of a given cell is copied to all blank cells on the right of it.
+     * given row index. The value of a given cell is copied to all blank cells on the right of it.
      *
      * @param rowIndex the row index
      */
@@ -222,8 +227,7 @@ public class TransformableSheet {
 
     /**
      * This method patches the cells of the given column and row indices with the
-     * given value. The style is copied from
-     * an existing cell.
+     * given value. The style is copied from an existing cell.
      *
      * @param colIndex1 the column index to copy the style from
      * @param rowIndex1 the row index to copy the style from
