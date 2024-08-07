@@ -68,15 +68,14 @@ public class TransformableSheet {
     }
 
     /**
-     * This method sets the parser hints for the parsers used by the sheet's
-     * associated document.
+     * This method sets the hints for the associated document by overwriting the
+     * default hints for the document format.
      *
-     * @param hints the parser hints
+     * @param hints the hints: INTELLI_EXTRACT, INTELLI_LAYOUT, INTELLI_TAG
      */
-    public void setHints(final String hints) {
-        final var l = Arrays.asList(hints.split(",")).stream().map(Document.Hint::valueOf).toList();
-        final var h = EnumSet.copyOf(l);
-        this.sheet.getDocument().setHints(h);
+    public void setDocumentHints(final String hints) {
+        this.sheet.getDocument().setHints(
+                EnumSet.copyOf(Arrays.asList(hints.split(",")).stream().map(Document.Hint::valueOf).toList()));
     }
 
     /**
