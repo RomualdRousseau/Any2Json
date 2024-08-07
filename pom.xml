@@ -3,7 +3,7 @@
 
     <groupId>com.github.romualdrousseau</groupId>
     <artifactId>any2json</artifactId>
-    <version>2.44-SNAPSHOT</version>
+    <version>2.44</version>
     <packaging>jar</packaging>
 
     <name>Any2Json</name>
@@ -48,7 +48,7 @@
         <connection>scm:git:https://github.com/romualdrousseau/any2json.git</connection>
         <developerConnection>scm:git:https://github.com/romualdrousseau/any2json.git</developerConnection>
         <url>https://github.com/romualdrousseau/any2json</url>
-        <tag>HEAD</tag>
+        <tag>any2json-2.44</tag>
     </scm>
 
     <distributionManagement>
@@ -151,7 +151,7 @@
                     <consoleOutputReporter>
                         <disable>true</disable>
                     </consoleOutputReporter>
-                    <statelessTestsetInfoReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5StatelessTestsetInfoTreeReporterUnicode"/>
+                    <statelessTestsetInfoReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5StatelessTestsetInfoTreeReporterUnicode" />
                 </configuration>
             </plugin>
             <plugin>
