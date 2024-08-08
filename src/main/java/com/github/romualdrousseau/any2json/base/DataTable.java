@@ -19,6 +19,10 @@ public class DataTable extends BaseTable {
         super(table);
     }
 
+    public DataTable(final BaseTable table, final int rowOffset) {
+        super(table, table.getFirstRow() + rowOffset, table.getLastRow());
+    }
+
     public int getNumberOfRowGroups() {
         return this.rowGroups.size();
     }
