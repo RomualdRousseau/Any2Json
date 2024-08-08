@@ -91,16 +91,16 @@ public class BaseSheet implements Sheet {
             AutoCrop.Apply(this);
         }
 
-        final var document = this.getDocument();
+        this.document.updateParsersAndClassifiers();
 
         // Find datatables and metatables
 
-        final var tables = document.getSheetParser().findAllTables(this);
+        final var tables = this.document.getSheetParser().findAllTables(this);
         if (!this.notifyStepCompleted(new AllTablesExtractedEvent(this, tables))) {
             return Optional.empty();
         }
 
-        final var dataTables = document.getTableParser().getDataTables(this, tables);
+        final var dataTables = this.document.getTableParser().getDataTables(this, tables);
         if (!this.notifyStepCompleted(new DataTableListBuiltEvent(this, dataTables))) {
             return Optional.empty();
         }
@@ -108,19 +108,19 @@ public class BaseSheet implements Sheet {
             return Optional.empty();
         }
 
-        final var metaTables = document.getTableParser().getMetaTables(this, tables);
+        final var metaTables = this.document.getTableParser().getMetaTables(this, tables);
         if (!this.notifyStepCompleted(new MetaTableListBuiltEvent(this, metaTables))) {
             return Optional.empty();
         }
 
-        if (!document.getHints().contains(Document.Hint.INTELLI_LAYOUT)) {
+        if (!this.document.getHints().contains(Document.Hint.INTELLI_LAYOUT)) {
             return Optional.of(new BaseTableGraph(dataTables.get(0)));
         }
 
         // Build table graph: linked the metatable and datatables depending of the reading directional preferences
         // in perception of visual stimuli depending of the cultures and writing systems.
 
-        final var readingDirection = document.getReadingDirection();
+        final var readingDirection = this.document.getReadingDirection();
         final var root = BaseTableGraphBuilder.build(metaTables, dataTables, readingDirection);
 
         if (!this.notifyStepCompleted(new TableGraphBuiltEvent(this, root))) {
@@ -151,6 +151,10 @@ public class BaseSheet implements Sheet {
         this.notifyStepCompleted(new TableReadyEvent(this, table));
 
         return Optional.of(table);
+    }
+
+    public boolean isPivotEnabled() {
+        return this.pivotEnabled;
     }
 
     public SheetStore getSheetStore() {

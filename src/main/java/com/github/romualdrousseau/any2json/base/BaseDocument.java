@@ -19,8 +19,9 @@ import com.github.romualdrousseau.any2json.transform.op.StitchRows;
 
 public abstract class BaseDocument implements Document {
 
+    protected abstract EnumSet<Hint> getIntelliCapabilities();
+
     public BaseDocument() {
-        this.updateParsersAndClassifiers();
         // GutenbergDiagonal (or LRTB) is the default reading direction.
         this.readingDirection = new GutenbergDiagonal();
     }
@@ -74,8 +75,11 @@ public abstract class BaseDocument implements Document {
 
     @Override
     public Document setHints(final EnumSet<Hint> hints) {
+        return this.setRawHints(hints);
+    }
+
+    public Document setRawHints(final EnumSet<Hint> hints) {
         this.hints = hints;
-        this.updateParsersAndClassifiers();
         return this;
     }
 
@@ -134,13 +138,14 @@ public abstract class BaseDocument implements Document {
     }
 
     public void updateParsersAndClassifiers() {
-        if (this.hints.contains(Document.Hint.INTELLI_EXTRACT)) {
+        final var capa = this.getIntelliCapabilities();
+        if (capa.contains(Document.Hint.INTELLI_EXTRACT) && this.hints.contains(Document.Hint.INTELLI_EXTRACT)) {
             this.sheetParser = new SheetBitmapParser();
         } else {
             this.sheetParser = new SimpleSheetParser();
         }
 
-        if (this.hints.contains(Document.Hint.INTELLI_LAYOUT)) {
+        if (capa.contains(Document.Hint.INTELLI_LAYOUT) && this.hints.contains(Document.Hint.INTELLI_LAYOUT)) {
             this.tableParser = DynamicPackages.GetElementParserFactory()
                     .map(x -> x.newInstance(this.model))
                     .orElseGet(() -> new SimpleTableParser(this.model));
@@ -148,7 +153,7 @@ public abstract class BaseDocument implements Document {
             this.tableParser = new SimpleTableParser(this.model);
         }
 
-        if (this.hints.contains(Document.Hint.INTELLI_TAG)) {
+        if (capa.contains(Document.Hint.INTELLI_TAG) && this.hints.contains(Document.Hint.INTELLI_TAG)) {
             this.tagClassifier = DynamicPackages.GetTagClassifierFactory()
                     .map(x -> x.newInstance(this.model))
                     .orElseGet(() -> new SimpleTagClassifier(this.model));

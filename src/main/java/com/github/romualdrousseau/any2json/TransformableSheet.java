@@ -1,7 +1,6 @@
 package com.github.romualdrousseau.any2json;
 
 import java.util.List;
-import java.util.Arrays;
 import java.util.EnumSet;
 
 import org.python.util.PythonInterpreter;
@@ -73,9 +72,9 @@ public class TransformableSheet {
      *
      * @param hints the hints: INTELLI_EXTRACT, INTELLI_LAYOUT, INTELLI_TAG
      */
-    public void setDocumentHints(final String hints) {
-        this.sheet.getDocument().setHints(
-                EnumSet.copyOf(Arrays.asList(hints.split(",")).stream().map(Document.Hint::valueOf).toList()));
+    public void setDocumentHints(final String... hints) {
+        ((BaseDocument) this.sheet.getDocument()).setRawHints(
+                EnumSet.copyOf(List.of(hints).stream().map(Document.Hint::valueOf).toList()));
     }
 
     /**
@@ -246,7 +245,6 @@ public class TransformableSheet {
      */
     public void disablePivot() {
         this.sheet.disablePivot();
-        this.sheet.getDocument().getTableParser().disablePivot();
     }
 
     /**
