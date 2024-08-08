@@ -26,10 +26,6 @@ public class SimpleTableParser implements TableParser {
     }
 
     @Override
-    public void disablePivot() {
-    }
-
-    @Override
     public void setParserOptions(final String options) {
     }
 
