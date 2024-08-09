@@ -4,13 +4,21 @@ import java.util.List;
 
 public interface TagClassifier extends AutoCloseable {
 
-    void updateModel(final Model model);
+    enum TagStyle {
+        NONE,
+        CAMEL,
+        SNAKE
+    }
+
+    Model getModel();
+
+    TagClassifier setModel(final Model model);
 
     String predict(final String name, final List<String> entities, final List<String> context);
 
-    TagClassifier setSnakeMode(final boolean snake);
+    TagClassifier.TagStyle getTagStyle();
 
-    TagClassifier setCamelMode(final boolean snake);
+    TagClassifier setTagStyle(final TagClassifier.TagStyle mode);
 
     String ensureTagStyle(final String text);
 }

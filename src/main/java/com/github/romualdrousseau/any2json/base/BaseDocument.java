@@ -22,7 +22,9 @@ public abstract class BaseDocument implements Document {
     protected abstract EnumSet<Hint> getIntelliCapabilities();
 
     public BaseDocument() {
-        // GutenbergDiagonal (or LRTB) is the default reading direction.
+        this.sheetParser = new SimpleSheetParser();
+        this.tableParser = new SimpleTableParser(this.model);
+        this.tagClassifier = new SimpleTagClassifier(this.model, TagClassifier.TagStyle.NONE);
         this.readingDirection = new GutenbergDiagonal();
     }
 
@@ -139,6 +141,7 @@ public abstract class BaseDocument implements Document {
 
     public void updateParsersAndClassifiers() {
         final var capa = this.getIntelliCapabilities();
+
         if (capa.contains(Document.Hint.INTELLI_EXTRACT) && this.hints.contains(Document.Hint.INTELLI_EXTRACT)) {
             this.sheetParser = new SheetBitmapParser();
         } else {
@@ -155,10 +158,10 @@ public abstract class BaseDocument implements Document {
 
         if (capa.contains(Document.Hint.INTELLI_TAG) && this.hints.contains(Document.Hint.INTELLI_TAG)) {
             this.tagClassifier = DynamicPackages.GetTagClassifierFactory()
-                    .map(x -> x.newInstance(this.model))
-                    .orElseGet(() -> new SimpleTagClassifier(this.model));
+                    .map(x -> x.newInstance(this.model, this.tagClassifier.getTagStyle()))
+                    .orElseGet(() -> new SimpleTagClassifier(this.model, this.tagClassifier.getTagStyle()));
         } else {
-            this.tagClassifier = new SimpleTagClassifier(this.model);
+            this.tagClassifier = new SimpleTagClassifier(this.model, this.tagClassifier.getTagStyle());
         }
     }
 

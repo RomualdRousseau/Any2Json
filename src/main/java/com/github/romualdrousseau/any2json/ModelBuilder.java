@@ -128,10 +128,10 @@ public class ModelBuilder {
         this._updateJSON();
         final var model = new Model(this.jsonModel);
         if (this.tableParser != null) {
-            this.tableParser.updateModel(model);
+            this.tableParser.setModel(model);
         }
         if (this.tagClassifier != null) {
-            this.tagClassifier.updateModel(model);
+            this.tagClassifier.setModel(model);
         }
         return model;
     }

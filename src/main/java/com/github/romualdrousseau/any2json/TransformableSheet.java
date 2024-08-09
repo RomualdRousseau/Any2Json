@@ -153,18 +153,15 @@ public class TransformableSheet {
      * This method sets the classifer case for the tag classifer used by the sheet's
      * associated document.
      *
-     * @param tagCase the classifer case: CAMEL, SNAKE, NONE
+     * @param tagCase the classifer case: NONE, SNAKE, CAMEL
      */
     public void setClassifierCaseMode(final String tagCase) {
-        if ("CAMEL".equals(tagCase)) {
-            this.sheet.getDocument().getTagClassifier().setCamelMode(true);
-            this.sheet.getDocument().getTagClassifier().setSnakeMode(false);
-        } else if ("SNAKE".equals(tagCase)) {
-            this.sheet.getDocument().getTagClassifier().setCamelMode(false);
-            this.sheet.getDocument().getTagClassifier().setSnakeMode(true);
+        if ("SNAKE".equals(tagCase)) {
+            this.sheet.getDocument().getTagClassifier().setTagStyle(TagClassifier.TagStyle.SNAKE);
+        } else if ("CAMEL".equals(tagCase)) {
+            this.sheet.getDocument().getTagClassifier().setTagStyle(TagClassifier.TagStyle.CAMEL);
         } else {
-            this.sheet.getDocument().getTagClassifier().setCamelMode(false);
-            this.sheet.getDocument().getTagClassifier().setSnakeMode(false);
+            this.sheet.getDocument().getTagClassifier().setTagStyle(TagClassifier.TagStyle.NONE);
         }
     }
 

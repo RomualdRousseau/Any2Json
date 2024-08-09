@@ -18,7 +18,13 @@ public class SimpleTableParser implements TableParser {
     }
 
     @Override
-    public void updateModel(final Model model) {
+    public Model getModel() {
+        return null;
+    }
+
+    @Override
+    public TableParser setModel(final Model model) {
+        return this;
     }
 
     @Override
@@ -26,7 +32,13 @@ public class SimpleTableParser implements TableParser {
     }
 
     @Override
-    public void setParserOptions(final String options) {
+    public String getParserOptions() {
+        return null;
+    }
+
+    @Override
+    public TableParser setParserOptions(final String options) {
+        return this;
     }
 
     @Override

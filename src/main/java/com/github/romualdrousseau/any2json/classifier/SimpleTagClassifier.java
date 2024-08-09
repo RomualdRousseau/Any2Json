@@ -11,19 +11,20 @@ import com.github.romualdrousseau.shuju.strings.StringUtils;
 
 public class SimpleTagClassifier implements TagClassifier {
 
-    private final Pattern pattern = Pattern.compile(" \\(\\$(.*)\\)$");
+    public SimpleTagClassifier(final Model model, final TagClassifier.TagStyle tagStyle) {
+        this.model = model;
+        this.tagStyle = tagStyle;
 
-    public SimpleTagClassifier(final Model model) {
         final List<String> lexicon;
         if (model != null && model.toJSON().getArray("lexicon") != null) {
             lexicon = JSON.<String>streamOf(model.toJSON().getArray("lexicon")).toList();
         } else {
             lexicon = StringUtils.getSymbols().stream().toList();
         }
-
         this.tagTokenizer = new ShingleTokenizer(lexicon, 1);
-        this.snakeMode = false;
-        this.camelMode = false;
+    }
+
+    protected void updateModel() {
     }
 
     @Override
@@ -31,7 +32,15 @@ public class SimpleTagClassifier implements TagClassifier {
     }
 
     @Override
-    public void updateModel(final Model model) {
+    public Model getModel() {
+        return this.model;
+    }
+
+    @Override
+    public TagClassifier setModel(final Model model) {
+        this.model = model;
+        this.updateModel();
+        return this;
     }
 
     @Override
@@ -45,24 +54,23 @@ public class SimpleTagClassifier implements TagClassifier {
     }
 
     @Override
-    public SimpleTagClassifier setSnakeMode(final boolean snakeMode) {
-        this.snakeMode = snakeMode;
-        return this;
+    public TagClassifier.TagStyle getTagStyle() {
+        return this.tagStyle;
     }
 
     @Override
-    public SimpleTagClassifier setCamelMode(final boolean camelMode) {
-        this.camelMode = camelMode;
+    public TagClassifier setTagStyle(final TagClassifier.TagStyle mode) {
+        this.tagStyle = mode;
         return this;
     }
 
     @Override
     public String ensureTagStyle(final String text) {
-        if (this.snakeMode) {
+        if (this.tagStyle == TagClassifier.TagStyle.SNAKE) {
             this.tagTokenizer.disableLemmatization();
             return StringUtils.toSnake(text, this.tagTokenizer);
         }
-        if (this.camelMode) {
+        if (this.tagStyle == TagClassifier.TagStyle.CAMEL) {
             this.tagTokenizer.disableLemmatization();
             return StringUtils.toCamel(text, this.tagTokenizer);
         }
@@ -75,7 +83,9 @@ public class SimpleTagClassifier implements TagClassifier {
         }
     }
 
+    private final Pattern pattern = Pattern.compile(" \\(\\$(.*)\\)$");
     private final ShingleTokenizer tagTokenizer;
-    private boolean snakeMode;
-    private boolean camelMode;
+
+    protected Model model;
+    protected TagClassifier.TagStyle tagStyle;
 }
